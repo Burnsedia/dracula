@@ -3,11 +3,11 @@ import React, { useState} from "react"
 import styled, { css } from "styled-components"
 
 const Log = styled.div`
-  background-color: #27ae60;
-  margin: 0 0 2rem;
-  padding: 1rem;
+  background-color: #ff5555;
+  margin: 0 0 25px;
+  padding: 1%;
   text-align: center;
-  width: 100vw;
+  width: 100%;
   && h1 {
     margin: 0;
   }
@@ -18,12 +18,13 @@ const Log = styled.div`
   }
 `
 const Button = styled.button`
-  background: transparent;
-  border-radius: 5px;
+  background: #f8f8f2;
+  /* border-radius: 5px; */
   border: 2px solid red;
-  color: red;
+  color: #bd93f9;
   margin: 0 1em;
   padding: 0.25em 1em;
+  width: 100%;
   transition: all ease 100ms;
   &&:hover {
     cursor: pointer;
@@ -52,7 +53,7 @@ export default function BloodSugarLog() {
   return (
     <Log>
      <form onSubmit={onSubmit}>
-        <label htmlFor="bloodSugar">Log Blood Sugar</label>
+        <label htmlFor="bloodSugar">Log Blood Sugar </label>
         <input
           type="text"
           id="bloodSugar"
