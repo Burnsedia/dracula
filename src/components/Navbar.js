@@ -4,11 +4,11 @@ import React from "react"
 import styled from "styled-components"
 
 const Nav = styled.div`
-  background-color: #27ae60;
+  background-color: #44475a;
   margin: 0 0 2rem;
   padding: 1rem;
   text-align: center;
-  width: 100vw;
+  width: 100%;
   && h1 {
     margin: 0;
   }
