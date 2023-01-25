@@ -4,9 +4,20 @@ import React from "react"
 import styled from "styled-components"
 import { IonApp, 
   IonHeader, 
+  IonToolbar, 
   IonTitle, 
-  IonToolbar,
-  } from '@ionic/react';
+  IonContent, 
+  IonFooter, 
+  IonMenu,
+  IonList,
+  IonListHeader,
+  IonMenuToggle,
+  IonIcon,
+  IonLabel,
+  IonPage ,
+  IonButtons,
+  IonButton,
+  IonItem } from '@ionic/react';
 
 const Nav = styled.div`
   background-color: #44475a;
@@ -29,7 +40,7 @@ export default function Navbar() {
     <IonMenu content-id="main-content">
     <IonHeader>
       <IonToolbar color="primary">
-        <IonTitle>Menu</IonTitle>
+        <IonTitle>Dracula</IonTitle>
       </IonToolbar>
     </IonHeader>
     </IonMenu>
