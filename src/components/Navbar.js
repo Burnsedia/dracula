@@ -2,6 +2,11 @@
 import { Link } from "gatsby"
 import React from "react"
 import styled from "styled-components"
+import { IonApp, 
+  IonHeader, 
+  IonTitle, 
+  IonToolbar,
+  } from '@ionic/react';
 
 const Nav = styled.div`
   background-color: #44475a;
@@ -21,18 +26,13 @@ const Nav = styled.div`
 
 export default function Navbar() {
   return (
-    <Nav>
-      <h1>Dracula</h1>
-      <h2>Track Your Blood Sugar</h2>
-      <ul>
-        <li>
-          <Link to="/">Home</Link>
-        </li>
-        <li>
-          <Link to="/BloodSugar">BloodSugar</Link>
-        </li>
-      </ul>
-    </Nav>
+    <IonMenu content-id="main-content">
+    <IonHeader>
+      <IonToolbar color="primary">
+        <IonTitle>Menu</IonTitle>
+      </IonToolbar>
+    </IonHeader>
+    </IonMenu>
   )
-}
+ };
 
