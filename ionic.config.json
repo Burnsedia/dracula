@@ -1,0 +1,7 @@
+{
+  "name": "Dracula",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "react"
+}
