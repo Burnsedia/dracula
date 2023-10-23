@@ -1,12 +1,13 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
-import { NavigationBar } from 'expo-navigation-bar';
+// import { NavigationBar } from 'expo-navigation-bar';
 export default function App() {
   return (
     <View style={styles.container}>
-      <NavigationBar style="auto"/>
+      {/* <NavigationBar style="auto"/> */}
       <Text>A Privacy Focused Blood Sugar Tracking app</Text>
-      <StatusBar style="auto" />
+      <Text>A Privacy Focused Blood Sugar Tracking app</Text>
+      {/* <StatusBar style="auto" /> */}
     </View>
   );
 }
