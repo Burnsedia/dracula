@@ -1,16 +1,17 @@
-import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
-// import { NavigationBar } from 'expo-navigation-bar';
+import { NavigationContainer,  } from '@react-navigation/native';
+import { createNativeStackNavigator } from "@react-navigation/native-stack"
+import Login from "pages/login"
+
+const Stack =  createNativeStackNavigator()
 export default function App() {
   return (
-    <View style={styles.container}>
-      {/* <NavigationBar style="auto"/> */}
-      <Text>A Privacy Focused Blood Sugar Tracking app</Text>
-      <Text>A Privacy Focused Blood Sugar Tracking app</Text>
-      {/* <StatusBar style="auto" /> */}
-    </View>
-  );
-}
+    <NavigationContainer>
+      <Stack.Navigator>
+      
+      </Stack.Navigator>
+    </NavigationContainer> 
+   }
 
 const styles = StyleSheet.create({
   container: {
