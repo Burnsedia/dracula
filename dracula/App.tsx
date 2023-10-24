@@ -3,6 +3,7 @@ import { NavigationContainer,  } from '@react-navigation/native';
 import { createNativeStackNavigator } from "@react-navigation/native-stack"
 import Login from "pages/login"
 
+
 const Stack =  createNativeStackNavigator()
 export default function App() {
   return (
@@ -15,11 +16,10 @@ export default function App() {
       </Stack.Navigator>
      <Stack.Navigator>
       Settings
-      </Stack.Navigator>
-
+    </Stack.Navigator>
     </NavigationContainer> 
-   }
-  )
+  );
+}
 
 const styles = StyleSheet.create({
   container: {
