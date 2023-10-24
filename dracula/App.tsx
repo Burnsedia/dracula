@@ -8,10 +8,18 @@ export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator>
-      
+      Home   
       </Stack.Navigator>
+      <Stack.Navigator>
+      Logs   
+      </Stack.Navigator>
+     <Stack.Navigator>
+      Settings
+      </Stack.Navigator>
+
     </NavigationContainer> 
    }
+  )
 
 const styles = StyleSheet.create({
   container: {
