@@ -1,21 +1,24 @@
 import { StyleSheet, Text, View } from 'react-native';
 import { NavigationContainer,  } from '@react-navigation/native';
 import { createNativeStackNavigator } from "@react-navigation/native-stack"
-import Login from "./pages/login";
-
+import BloodSugarLogs from './pages/bloodsugarHistory';
 
 const Stack =  createNativeStackNavigator()
 export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator>
-      Home   
+      Home  
+      <Stack.Screen name="Home" component={BloodSugarLogs}/>
       </Stack.Navigator>
       <Stack.Navigator>
       Logs   
+      <Stack.Screen name="Logs" component={BloodSugarLogs}/>
       </Stack.Navigator>
      <Stack.Navigator>
       Settings
+      <Stack.Screen name="Home" component={BloodSugarLogs}/>
+
     </Stack.Navigator>
     </NavigationContainer> 
   );
