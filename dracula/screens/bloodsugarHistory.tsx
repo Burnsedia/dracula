@@ -1,9 +1,15 @@
-import { StyleSheet, Text, View, ScrollView, ScrollViewComponent } from 'react-native';
+import {
+  StyleSheet, 
+  Text,
+  View,
+  ScrollView,
+  ScrollViewComponent
+} from 'react-native';
 
 
 export default function BloodSugarLogs() {
   return (
-    <View>
+    <View style>
       <ScrollView>
         <ScrollViewComponent>
           <Text>
