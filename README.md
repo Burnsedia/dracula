@@ -4,15 +4,30 @@
 
 ## 🚀 TL;DR
 
-1.  **A Privacy focused blood sugar tracking app**
+1.  ## **A Privacy focused blood sugar tracking app**
     
     Track your blood sugar offline. Data is store in a SQLite database, 
     and can be exported as plain text. No vendor lock in and no DRM
     
-2.  **Simple to use**
+2.  ## **Simple to use**
 
-   Basic Material Design with simple and intinitive layout 
+    Material Design with simple and intinitive layout, using the Dracula Color theme, with more themes to
+    come. 
 
-3.  **Customize what data you track**
+3.  ## **Customize what data you track**
         
-        Track BloodSugar, Carbs, Exercies, you name, you can track it.
+    Track BloodSugar, Carbs, Exercies, you name, you can track it. Add new Catigories and tack that.  
+
+4.  ## **Export** your data 
+
+    Export your data to a CVS file
+
+5.  ## Mobile and Desktop Support
+    
+    Using Flutter to target All Mobile and Desktop Platforms, 
+
+6. ## Sync Your Data
+
+    If your don't controle it, you don't own it. Sync your data between Moble and Deskop using your 
+    favorit cloud storgage or Our End to End Encyred Cloud Service. 
+
