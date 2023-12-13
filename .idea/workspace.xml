@@ -5,9 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="3a6a93e9-f7ef-4f03-ab39-03ed609a7b7b" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dracula/App.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/dracula/App.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dracula/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/dracula/package-lock.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/dracula/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/dracula/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/todo.txt" beforeDir="false" afterPath="$PROJECT_DIR$/todo.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dracula/screens/bloodsugarHistory.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/dracula/screens/bloodsugarHistory.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

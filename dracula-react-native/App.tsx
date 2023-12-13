@@ -1,12 +1,12 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { NavigationContainer,  } from '@react-navigation/native';
 import { createNativeStackNavigator } from "@react-navigation/native-stack"
-import BloodSugarLogs from './pages/bloodsugarHistory';
+import BloodSugarLogs from './screens/bloodsugarHistory';
 
 const Stack =  createNativeStackNavigator()
 export default function App() {
   return (
-    <NavigationContainer>
+    <NavigationContainer styles>
       <Stack.Navigator>
       Home  
       <Stack.Screen name="Home" component={BloodSugarLogs}/>

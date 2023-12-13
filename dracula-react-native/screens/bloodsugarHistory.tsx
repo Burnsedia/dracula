@@ -6,10 +6,13 @@ import {
   ScrollViewComponent
 } from 'react-native';
 
+import Header form "../components/header.tsx"
+import Footer form "../components/footer.tsx.tsx"
+
 
 export default function BloodSugarLogs() {
   return (
-    <View style>
+    <View styles>
       <ScrollView>
         <ScrollViewComponent>
           <Text>
