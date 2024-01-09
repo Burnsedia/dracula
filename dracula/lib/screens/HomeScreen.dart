@@ -1,10 +1,11 @@
-
-class BloodSugarTrackerScreen extends StatefulWidget {
+import "../models/bloodsugar.dart";
+import '../componets/sidebar.dart';
+class HomeScreen extends StatefulWidget {
   @override
   _BloodSugarTrackerScreenState createState() => _BloodSugarTrackerScreenState();
 }
 
-class _BloodSugarTrackerScreenState extends State<BloodSugarTrackerScreen> {
+class _HomeScreenState extends State<HomeScreen> {
   List<Record> bloodSugarRecords = [];
 
   @override
