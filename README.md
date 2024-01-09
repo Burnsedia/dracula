@@ -24,7 +24,7 @@
 
 5.  ## Mobile and Desktop Support
     
-    Using Flutter to target All Mobile and Desktop Platforms, 
+    Using Flutter to target Android and all Desktop Platforms(Linux, Windows and Mac), 
 
 6. ## Sync Your Data
 
