@@ -1,3 +1,5 @@
+import "../models/bloodsugar.dart";
+import 'package:flutter/material.dart';
 
 class AddRecordScreen extends StatefulWidget {
   @override
