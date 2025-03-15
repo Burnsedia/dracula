@@ -3,3 +3,5 @@ class Record {
   final int carbs;
   Record({required this.bloodSugar, required this.carbs});
 }
+
+
