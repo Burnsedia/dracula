@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import "./screens/BloodSugarLog.dart";
+import "./screens/HomeScreen.dart";
+
 void main() {
   runApp(BloodSugarApp());
 }
@@ -12,7 +13,7 @@ class BloodSugarApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: BloodSugarTrackerScreen(),
+      home: HomeScreen(),
     );
   }
 }

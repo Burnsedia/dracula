@@ -1,8 +1,11 @@
+import 'package:flutter/material.dart';
 import "../models/bloodsugar.dart";
 import '../componets/sidebar.dart';
+import "./AddBloodSugar.dart";
+
 class HomeScreen extends StatefulWidget {
   @override
-  _BloodSugarTrackerScreenState createState() => _BloodSugarTrackerScreenState();
+  _HomeScreenState createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
