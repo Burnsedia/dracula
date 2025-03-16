@@ -9,7 +9,7 @@ class AddRecordScreen extends StatefulWidget {
 
 class _AddRecordScreenState extends State<AddRecordScreen> {
   TextEditingController bloodSugarController = TextEditingController();
-  TextEditingController carbsController = TextEditingController();
+  final bool isBeforeMeal; // true = Before Meal, false = After Meal
 
   @override
   Widget build(BuildContext context) {
@@ -22,26 +22,44 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            TextField(
+          children: [ TextField(
               controller: bloodSugarController,
               keyboardType: TextInputType.number,
               decoration: InputDecoration(labelText: 'Blood Sugar (mg/dL)'),
             ),
-            TextField(
-              controller: carbsController,
-              keyboardType: TextInputType.number,
-              decoration: InputDecoration(labelText: 'Carbs (grams)'),
+        
+            Column(
+              children: [
+                RadioListTile<bool>(
+                  title: Text("Before Meal"),
+                  value: true,
+                  groupValue: isBeforeMeal,
+                  onChanged: (bool? value) {
+                  setState(() {
+                   isBeforeMeal = value!;
+                 });
+               },
+              ),
+               RadioListTile<bool>(
+                 title: Text("After Meal"),
+                 value: false,
+                 groupValue: isBeforeMeal,
+                 onChanged: (bool? value) {
+                  setState(() {
+                   isBeforeMeal = value!;
+                 });
+               },
+             ),
+            ],
             ),
             ElevatedButton(
               onPressed: () {
                 double bloodSugar = double.tryParse(bloodSugarController.text) ?? 0.0;
-                int carbs = int.tryParse(carbsController.text) ?? 0;
 
-                if (bloodSugar > 0.0 && carbs >= 0) {
+                if (bloodSugar > 0.0 ) {
                   Navigator.pop(
                     context,
-                    Record(bloodSugar: bloodSugar, carbs: carbs),
+                    BloodSugarLog(bloodSugar: bloodSugar),
                   );
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(
@@ -62,7 +80,6 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
   @override
   void dispose() {
     bloodSugarController.dispose();
-    carbsController.dispose();
     super.dispose();
   }
 }
