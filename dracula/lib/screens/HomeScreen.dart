@@ -9,7 +9,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  List<Record> bloodSugarRecords = [];
+  List<BloodSugarLog> bloodSugarRecords = [];
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +41,6 @@ class _HomeScreenState extends State<HomeScreen> {
               itemBuilder: (context, index) {
                 return ListTile(
                   title: Text('Blood Sugar: ${bloodSugarRecords[index].bloodSugar} mg/dL'),
-                  subtitle: Text('Carbs: ${bloodSugarRecords[index].carbs} grams'),
                 );
               },
             ),
