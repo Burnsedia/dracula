@@ -23,7 +23,7 @@ class BloodSugarLog {
       "bloodSugar": bloodSugar,
       "isBeforeMeal": isBeforeMeal,
       "createdAt": createdAt,
-    }
+    };
   }
 }
 
