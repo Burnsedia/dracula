@@ -9,7 +9,7 @@ class AddRecordScreen extends StatefulWidget {
 
 class _AddRecordScreenState extends State<AddRecordScreen> {
   TextEditingController bloodSugarController = TextEditingController();
-  final bool isBeforeMeal; // true = Before Meal, false = After Meal
+  bool isBeforeMeal = true; // true = Before Meal, false = After Meal
 
   @override
   Widget build(BuildContext context) {
@@ -47,9 +47,10 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
                  onChanged: (bool? value) {
                   setState(() {
                    isBeforeMeal = value!;
-                 });
+                 }
+                );
                },
-             ),
+              ),
             ],
             ),
             ElevatedButton(
