@@ -1,8 +1,5 @@
-<<<<<<< Updated upstream
 import 'package:flutter/material.dart';
 
-
-=======
 class Dashboard extends StatefulWidget {
   @override
   _DashboardState createState() => _DashboardState();
@@ -11,7 +8,4 @@ class Dashboard extends StatefulWidget {
 
 class _DashboardState extends State<Dashboard>{
 
-
-
 }
->>>>>>> Stashed changes
