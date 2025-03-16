@@ -59,7 +59,7 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
                 if (bloodSugar > 0.0 ) {
                   Navigator.pop(
                     context,
-                    BloodSugarLog(bloodSugar: bloodSugar),
+                    BloodSugarLog(bloodSugar: bloodSugar, isBeforeMeal: isBeforeMeal, createdAt: DateTime.now()),
                   );
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(
