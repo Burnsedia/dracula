@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import "../models/bloodsugar.dart";
 import '../componets/sidebar.dart';
@@ -15,38 +16,38 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Blood Sugar Tracker'),
+        title: const Text('Blood Sugar Tracker'),
       ),
       body: Column(
         children: [
-          ElevatedButton(
-            onPressed: () {
-              // Navigate to the add record screen
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => AddRecordScreen()),
-              ).then((newRecord) {
-                if (newRecord != null) {
-                  setState(() {
-                    bloodSugarRecords.add(newRecord);
-                  });
-                }
-              });
-            },
-            child: Text('Add Blood Sugar Record'),
-          ),
           Expanded(
             child: ListView.builder(
               itemCount: bloodSugarRecords.length,
               itemBuilder: (context, index) {
                 return ListTile(
-                  title: Text('Blood Sugar: ${bloodSugarRecords[index].bloodSugar} mg/dL'),
+                  title: Text(
+                    'Blood Sugar: ${bloodSugarRecords[index].bloodSugar} mg/dL',
+                  ),
                 );
               },
             ),
           ),
         ],
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () async {
+          final newRecord = await Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => AddRecordScreen()),
+          );
+          if (newRecord != null) {
+            setState(() => bloodSugarRecords.add(newRecord));
+          }
+        },
+        tooltip: 'Add Blood Sugar Record',
+        child: const Icon(Icons.add),
+      ),
     );
-  }
-}
+  } // <-- closes build()
+}   // <-- closes _HomeScreenState
+

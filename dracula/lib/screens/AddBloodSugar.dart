@@ -53,25 +53,31 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
               ),
             ],
             ),
-            ElevatedButton(
-              onPressed: () {
-                double bloodSugar = double.tryParse(bloodSugarController.text) ?? 0.0;
+           FilledButton.icon(
+  onPressed: () {
+    final bloodSugar = double.tryParse(bloodSugarController.text) ?? 0.0;
 
-                if (bloodSugar > 0.0 ) {
-                  Navigator.pop(
-                    context,
-                    BloodSugarLog(bloodSugar: bloodSugar, isBeforeMeal: isBeforeMeal, createdAt: DateTime.now()),
-                  );
-                } else {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text('Invalid input. Please enter valid values.'),
-                    ),
-                  );
-                }
-              },
-              child: Text('Save Record'),
-            ),
+    if (bloodSugar > 0.0) {
+      Navigator.pop(
+        context,
+        BloodSugarLog(
+          bloodSugar: bloodSugar,
+          isBeforeMeal: isBeforeMeal,
+          createdAt: DateTime.now(),
+        ),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Invalid input. Please enter valid values.'),
+        ),
+      );
+    }
+  },
+  icon: const Icon(Icons.save),
+  label: const Text('Save Record'),
+),
+
           ],
         ),
       ),
