@@ -1,39 +1,38 @@
+
 plugins {
     id "com.android.application"
-    id "kotlin-android"
+    id "org.jetbrains.kotlin.android"
     id "dev.flutter.flutter-gradle-plugin"
 }
 
 def localProperties = new Properties()
-def localPropertiesFile = rootProject.file('local.properties')
+def localPropertiesFile = rootProject.file("local.properties")
 if (localPropertiesFile.exists()) {
-    localPropertiesFile.withReader('UTF-8') { reader ->
-        localProperties.load(reader)
+    localPropertiesFile.withReader("UTF-8") {
+        localProperties.load(it)
     }
 }
 
-def flutterVersionCode = localProperties.getProperty('flutter.versionCode', '1')
-def flutterVersionName = localProperties.getProperty('flutter.versionName', '1.0')
+def flutterVersionCode = localProperties.getProperty("flutter.versionCode", "1")
+def flutterVersionName = localProperties.getProperty("flutter.versionName", "1.0")
 
 android {
     namespace "com.example.dracula"
 
-    // 🔥 Explicit instead of Flutter’s old values
-    compileSdkVersion 36
+    compileSdk = 36
 
     defaultConfig {
         applicationId "com.example.dracula"
-        minSdkVersion flutter.minSdkVersion
-        targetSdkVersion 36
+        minSdkVersion = flutter.minSdkVersion
+        targetSdk = 36
 
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
     }
 
     compileOptions {
-        // Java 17 bytecode works with AGP 8.0.2
-        sourceCompatibility JavaVersion.VERSION_17
-        targetCompatibility JavaVersion.VERSION_17
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 
     kotlinOptions {
@@ -41,7 +40,7 @@ android {
     }
 
     sourceSets {
-        main.java.srcDirs += 'src/main/kotlin'
+        main.java.srcDirs += "src/main/kotlin"
     }
 
     buildTypes {
@@ -49,11 +48,8 @@ android {
             signingConfig signingConfigs.debug
         }
     }
-
-    ndkVersion flutter.ndkVersion
 }
 
 flutter {
-    source '../..'
+    source "../.."
 }
-
