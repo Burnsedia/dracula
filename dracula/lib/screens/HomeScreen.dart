@@ -48,6 +48,6 @@ class _HomeScreenState extends State<HomeScreen> {
         child: const Icon(Icons.add),
       ),
     );
-  } // <-- closes build()
-}   // <-- closes _HomeScreenState
+  }
+}
 
