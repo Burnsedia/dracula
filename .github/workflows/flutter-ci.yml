@@ -61,3 +61,32 @@ jobs:
       with:
         name: android-apk
         path: dracula/build/app/outputs/flutter-apk/app-release.apk
+
+  build-ios:
+    runs-on: macos-latest
+    needs: test
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        flutter-version: '3.2.3'
+
+    - name: Install dependencies
+      run: flutter pub get
+      working-directory: dracula
+
+    - name: Set up Xcode
+      run: sudo xcode-select -s /Applications/Xcode.app/Contents/Developer
+
+    - name: Build iOS
+      run: flutter build ios --release --no-codesign
+      working-directory: dracula
+
+    - name: Upload iOS build artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: ios-build
+        path: dracula/build/ios/iphoneos/Runner.app
