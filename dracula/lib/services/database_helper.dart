@@ -18,23 +18,31 @@ class DatabaseHelper {
     final dbPath = await getDatabasesPath();
     final path = join(dbPath, filePath);
 
-    return await openDatabase(path, version: 1, onCreate: _createDB);
+    return await openDatabase(path,
+        version: 2, onCreate: _createDB, onUpgrade: _upgradeDB);
   }
 
   Future _createDB(Database db, int version) async {
     const idType = 'INTEGER PRIMARY KEY AUTOINCREMENT';
     const textType = 'TEXT NOT NULL';
     const doubleType = 'REAL NOT NULL';
-    const boolType = 'BOOLEAN NOT NULL';
+    const intType = 'INTEGER NOT NULL';
 
     await db.execute('''
-CREATE TABLE blood_sugar_logs ( 
-  id $idType, 
+CREATE TABLE blood_sugar_logs (
+  id $idType,
   bloodSugar $doubleType,
-  isBeforeMeal $boolType,
+  isBeforeMeal $intType,
   createdAt $textType
   )
 ''');
+  }
+
+  Future _upgradeDB(Database db, int oldVersion, int newVersion) async {
+    if (oldVersion < 2) {
+      await db.execute('DROP TABLE IF EXISTS blood_sugar_logs');
+      await _createDB(db, newVersion);
+    }
   }
 
   Future<BloodSugarLog> create(BloodSugarLog log) async {
