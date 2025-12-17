@@ -79,21 +79,72 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
                ],
              ),
 
-             FilledButton(
-               onPressed: () async {
-                 final bloodSugar = double.tryParse(bloodSugarController.text) ?? 0.0;
+              FilledButton(
+                onPressed: () {
+                  final bloodSugar = double.tryParse(bloodSugarController.text) ?? 0.0;
 
-                 if (bloodSugar > 0.0) {
-                   try {
-                     // Convert from display units back to mg/dL for storage
-                     final storageValue = SettingsService().convertFromDisplayUnit(bloodSugar, _displayUnit);
+                  if (bloodSugar > 0.0) {
+                    try {
+                      // Convert from display units back to mg/dL for storage
+                      final storageValue = SettingsService().convertFromDisplayUnit(bloodSugar, _displayUnit);
 
-                     if (widget.record != null) {
-                       // Update existing record
-                       final updatedRecord = widget.record!.copyWith(
-                         bloodSugar: storageValue,
-                         isBeforeMeal: isBeforeMeal,
-                       );
+                      if (widget.record != null) {
+                        // Update existing record
+                        final updatedRecord = widget.record!.copyWith(
+                          bloodSugar: storageValue,
+                          isBeforeMeal: isBeforeMeal,
+                        );
+
+                        DatabaseHelper.instance.update(updatedRecord).then((_) {
+                          if (mounted) {
+                            Navigator.pop(context, updatedRecord);
+                          }
+                        });
+                      } else {
+                        // Create new record
+                        final newRecord = BloodSugarLog(
+                          bloodSugar: storageValue,
+                          isBeforeMeal: isBeforeMeal,
+                          createdAt: DateTime.now(),
+                        );
+
+                        DatabaseHelper.instance.create(newRecord).then((savedRecord) {
+                          if (mounted) {
+                            Navigator.pop(context, savedRecord);
+                          }
+                        });
+                      }
+                    } catch (e) {
+                      if (mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: const Text('Failed to save record. Please try again.'),
+                          ),
+                        );
+                      }
+                    }
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: const Text('Invalid input. Please enter valid values.'),
+                      ),
+                    );
+                  }
+                },
+               child: Row(
+                 mainAxisSize: MainAxisSize.min,
+                 children: [
+                   Icon(widget.record != null ? Icons.update : Icons.save),
+                   const SizedBox(width: 8),
+                   Text(widget.record != null ? 'Update Record' : 'Save Record'),
+                 ],
+               ),
+              ),
+
+           ],
+         ),
+       ),
+     );
 
                        await DatabaseHelper.instance.update(updatedRecord);
 
@@ -131,67 +182,14 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
                    );
                  }
                },
-               child: widget.record != null
-                 ? const Row(
-                     mainAxisSize: MainAxisSize.min,
-                     children: [
-                       const Icon(Icons.update),
-                       const SizedBox(width: 8),
-                       const Text('Update Record'),
-                     ],
-                   )
-                 : const Row(
-                     mainAxisSize: MainAxisSize.min,
-                     children: [
-                       const Icon(Icons.save),
-                       const SizedBox(width: 8),
-                       const Text('Save Record'),
-                     ],
-                   ),
-             ),
-
-           ],
-            ),
-            FilledButton.icon(
-   onPressed: () async {
-     final bloodSugar = double.tryParse(bloodSugarController.text) ?? 0.0;
-
-      if (bloodSugar > 0.0) {
-        try {
-          // Convert from display units back to mg/dL for storage
-          final storageValue = SettingsService().convertFromDisplayUnit(bloodSugar, _displayUnit);
-
-         if (widget.record != null) {
-           // Update existing record
-           final updatedRecord = widget.record!.copyWith(
-             bloodSugar: storageValue,
-             isBeforeMeal: isBeforeMeal,
-           );
-
-           await DatabaseHelper.instance.update(updatedRecord);
-
-           if (mounted) {
-             Navigator.pop(context, updatedRecord);
-           }
-         } else {
-           // Create new record
-           final newRecord = BloodSugarLog(
-             bloodSugar: storageValue,
-             isBeforeMeal: isBeforeMeal,
-             createdAt: DateTime.now(),
-           );
-
-           final savedRecord = await DatabaseHelper.instance.create(newRecord);
-
-           if (mounted) {
-             Navigator.pop(context, savedRecord);
-           }
-         }
-       } catch (e) {
-         if (mounted) {
-           ScaffoldMessenger.of(context).showSnackBar(
-             const SnackBar(
-               content: Text('Failed to save record. Please try again.'),
+               child: Row(
+                 mainAxisSize: MainAxisSize.min,
+                 children: [
+                   Icon(widget.record != null ? Icons.update : Icons.save),
+                   const SizedBox(width: 8),
+                   Text(widget.record != null ? 'Update Record' : 'Save Record'),
+                 ],
+               ),
              ),
            );
          }
@@ -203,10 +201,7 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
          ),
        );
      }
-   },
-   icon: const Icon(widget.record != null ? Icons.update : Icons.save),
-   label: Text(widget.record != null ? 'Update Record' : 'Save Record'),
- ),
+    },
 
           ],
         ),
