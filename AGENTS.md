@@ -92,3 +92,6 @@ The application follows a simple stateful widget architecture. The main screen (
 *   **File Structure:** The code is organized into `screens`, `models`, `components`, and `services` directories within the `lib` folder.
 *   **State Management:** The app currently uses `StatefulWidget` for state management.
 *   **Testing:** A basic widget test is included in `test/widget_test.dart`. To run tests, use the `flutter test` command.
+* **Commit Strategy:** Commit every change separately, you much add each change and commit it then push it 
+* **Branching Strategy:** create a feature branch for every user storey.Write Tests first then implement features, you **Must** fully all TDD best practices
+* **Rule of Ten:** You **Must Follow NASAs Rule of TEN, to ensure working code
