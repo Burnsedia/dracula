@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import "../models/bloodsugar.dart";
 import "../services/database_helper.dart";
 import "../services/settings_service.dart";
-import "../componets/sidebar.dart";
 
 class AddRecordScreen extends StatefulWidget {
   final BloodSugarLog? record;
