@@ -187,6 +187,9 @@ class _HomeScreenState extends State<HomeScreen> {
                           return Card(
                             margin: const EdgeInsets.symmetric(
                                 horizontal: 16, vertical: 4),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
                             child: ListTile(
                               title: Text(
                                 'Blood Sugar: ${displayValue.toStringAsFixed(1)} $unitString',
