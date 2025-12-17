@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import "../models/bloodsugar.dart";
+import "../services/database_helper.dart";
 import "../componets/sidebar.dart";
 
 class AddRecordScreen extends StatefulWidget {
@@ -53,30 +54,43 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
               ),
             ],
             ),
-           FilledButton.icon(
-  onPressed: () {
-    final bloodSugar = double.tryParse(bloodSugarController.text) ?? 0.0;
+            FilledButton.icon(
+   onPressed: () async {
+     final bloodSugar = double.tryParse(bloodSugarController.text) ?? 0.0;
 
-    if (bloodSugar > 0.0) {
-      Navigator.pop(
-        context,
-        BloodSugarLog(
-          bloodSugar: bloodSugar,
-          isBeforeMeal: isBeforeMeal,
-          createdAt: DateTime.now(),
-        ),
-      );
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Invalid input. Please enter valid values.'),
-        ),
-      );
-    }
-  },
-  icon: const Icon(Icons.save),
-  label: const Text('Save Record'),
-),
+     if (bloodSugar > 0.0) {
+       try {
+         final newRecord = BloodSugarLog(
+           bloodSugar: bloodSugar,
+           isBeforeMeal: isBeforeMeal,
+           createdAt: DateTime.now(),
+         );
+
+         final savedRecord = await DatabaseHelper.instance.create(newRecord);
+
+         if (mounted) {
+           Navigator.pop(context, savedRecord);
+         }
+       } catch (e) {
+         if (mounted) {
+           ScaffoldMessenger.of(context).showSnackBar(
+             const SnackBar(
+               content: Text('Failed to save record. Please try again.'),
+             ),
+           );
+         }
+       }
+     } else {
+       ScaffoldMessenger.of(context).showSnackBar(
+         const SnackBar(
+           content: Text('Invalid input. Please enter valid values.'),
+         ),
+       );
+     }
+   },
+   icon: const Icon(Icons.save),
+   label: const Text('Save Record'),
+ ),
 
           ],
         ),
