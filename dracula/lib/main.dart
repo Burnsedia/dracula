@@ -4,8 +4,10 @@ import "./services/privacy_audit.dart";
 
 void main() {
   // Privacy audit: Ensure no telemetry or tracking
-  assert(PrivacyAudit.auditDependencies(), 'Privacy violation: Forbidden analytics packages detected');
-  assert(PrivacyAudit.verifyOfflineOperation(), 'Privacy violation: Network operations detected');
+  assert(PrivacyAudit.auditDependencies(),
+      'Privacy violation: Forbidden analytics packages detected');
+  assert(PrivacyAudit.verifyOfflineOperation(),
+      'Privacy violation: Network operations detected');
 
   runApp(BloodSugarApp());
 }
@@ -121,12 +123,11 @@ class BloodSugarApp extends StatelessWidget {
       // List tile
       listTileTheme: ListTileThemeData(
         textColor: draculaForeground,
-        subtitleTextColor: draculaComment,
         tileColor: draculaCurrentLine,
       ),
 
       // Dialog theme
-      dialogTheme: DialogTheme(
+      dialogTheme: DialogThemeData(
         backgroundColor: draculaCurrentLine,
         titleTextStyle: TextStyle(color: draculaForeground),
         contentTextStyle: TextStyle(color: draculaForeground),
@@ -165,4 +166,3 @@ class BloodSugarApp extends StatelessWidget {
     );
   }
 }
-
