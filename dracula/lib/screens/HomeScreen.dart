@@ -134,6 +134,105 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  Widget _buildSummaryCards() {
+    final today = DateTime.now();
+    final todayRecords = bloodSugarRecords.where((record) {
+      final recordDate = DateTime(
+          record.createdAt.year, record.createdAt.month, record.createdAt.day);
+      final todayDate = DateTime(today.year, today.month, today.day);
+      return recordDate == todayDate;
+    }).toList();
+
+    final average = todayRecords.isNotEmpty
+        ? todayRecords.map((r) => r.bloodSugar).reduce((a, b) => a + b) /
+            todayRecords.length
+        : 0.0;
+    final latest = todayRecords.isNotEmpty
+        ? todayRecords
+            .reduce((a, b) => a.createdAt.isAfter(b.createdAt) ? a : b)
+            .bloodSugar
+        : null;
+
+    return Container(
+      padding: const EdgeInsets.all(16),
+      child: Row(
+        children: [
+          Expanded(
+            child: Card(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  children: [
+                    Text(
+                      'Today\'s Average',
+                      style: Theme.of(context).textTheme.bodySmall,
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      average > 0
+                          ? SettingsService()
+                              .convertToDisplayUnit(average, _displayUnit)
+                              .toStringAsFixed(1)
+                          : '--',
+                      style:
+                          Theme.of(context).textTheme.headlineSmall?.copyWith(
+                                color: Theme.of(context).colorScheme.primary,
+                                fontWeight: FontWeight.bold,
+                              ),
+                    ),
+                    Text(
+                      SettingsService().getUnitDisplayString(_displayUnit),
+                      style: Theme.of(context).textTheme.bodySmall,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Card(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  children: [
+                    Text(
+                      'Latest Reading',
+                      style: Theme.of(context).textTheme.bodySmall,
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      latest != null
+                          ? SettingsService()
+                              .convertToDisplayUnit(latest, _displayUnit)
+                              .toStringAsFixed(1)
+                          : '--',
+                      style:
+                          Theme.of(context).textTheme.headlineSmall?.copyWith(
+                                color: Theme.of(context).colorScheme.primary,
+                                fontWeight: FontWeight.bold,
+                              ),
+                    ),
+                    Text(
+                      SettingsService().getUnitDisplayString(_displayUnit),
+                      style: Theme.of(context).textTheme.bodySmall,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   String _formatDateTime(DateTime dateTime) {
     final date = dateTime.toString().split(' ')[0]; // YYYY-MM-DD
     if (_showTimezone) {
@@ -174,49 +273,50 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
-          : bloodSugarRecords.isEmpty
-              ? const Center(
-                  child: Text(
-                    'No blood sugar records yet.\nTap + to add your first entry.',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 16, color: Colors.grey),
-                  ),
-                )
-              : Column(
-                  children: [
-                    Expanded(
-                      child: ListView.builder(
-                        itemCount: bloodSugarRecords.length,
-                        itemBuilder: (context, index) {
-                          final record = bloodSugarRecords[index];
-                          final displayValue = SettingsService()
-                              .convertToDisplayUnit(
-                                  record.bloodSugar, _displayUnit);
-                          final unitString = SettingsService()
-                              .getUnitDisplayString(_displayUnit);
+          : Column(
+              children: [
+                if (bloodSugarRecords.isNotEmpty) _buildSummaryCards(),
+                Expanded(
+                  child: bloodSugarRecords.isEmpty
+                      ? const Center(
+                          child: Text(
+                            'No blood sugar records yet.\nTap + to add your first entry.',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(fontSize: 16, color: Colors.grey),
+                          ),
+                        )
+                      : ListView.builder(
+                          itemCount: bloodSugarRecords.length,
+                          itemBuilder: (context, index) {
+                            final record = bloodSugarRecords[index];
+                            final displayValue = SettingsService()
+                                .convertToDisplayUnit(
+                                    record.bloodSugar, _displayUnit);
+                            final unitString = SettingsService()
+                                .getUnitDisplayString(_displayUnit);
 
-                          return Card(
-                            margin: const EdgeInsets.symmetric(
-                                horizontal: 16, vertical: 4),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            child: ListTile(
-                              title: Text(
-                                'Blood Sugar: ${displayValue.toStringAsFixed(1)} $unitString',
+                            return Card(
+                              margin: const EdgeInsets.symmetric(
+                                  horizontal: 16, vertical: 4),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
                               ),
-                              subtitle: Text(
-                                '${record.isBeforeMeal ? "Before" : "After"} meal • ${_formatDateTime(record.createdAt)}',
+                              child: ListTile(
+                                title: Text(
+                                  'Blood Sugar: ${displayValue.toStringAsFixed(1)} $unitString',
+                                ),
+                                subtitle: Text(
+                                  '${record.isBeforeMeal ? "Before" : "After"} meal • ${_formatDateTime(record.createdAt)}',
+                                ),
+                                onLongPress: () =>
+                                    _showEditDeleteMenu(context, record),
                               ),
-                              onLongPress: () =>
-                                  _showEditDeleteMenu(context, record),
-                            ),
-                          );
-                        },
-                      ),
-                    ),
-                  ],
+                            );
+                          },
+                        ),
                 ),
+              ],
+            ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
           final newRecord = await Navigator.push(
