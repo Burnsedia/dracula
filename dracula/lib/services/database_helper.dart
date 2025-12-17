@@ -1,6 +1,7 @@
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import 'package:dracula/models/bloodsugar.dart';
+import 'package:dracula/models/exercise.dart';
 
 class DatabaseHelper {
   static final DatabaseHelper instance = DatabaseHelper._init();
@@ -16,9 +17,10 @@ class DatabaseHelper {
 
   Future<Database> _initDB(String filePath) async {
     final dbPath = await getDatabasesPath();
-    final path = join(dbPath, 'dracula_v2.db');
+    final path = join(dbPath, 'dracula_v4.db');
 
-    return await openDatabase(path, version: 1, onCreate: _createDB);
+    return await openDatabase(path,
+        version: 2, onCreate: _createDB, onUpgrade: _upgradeDB);
   }
 
   Future _createDB(Database db, int version) async {
@@ -26,12 +28,24 @@ class DatabaseHelper {
     const textType = 'TEXT NOT NULL';
     const doubleType = 'REAL NOT NULL';
     const intType = 'INTEGER NOT NULL';
+    const nullableDoubleType = 'REAL';
 
     await db.execute('''
 CREATE TABLE blood_sugar_logs (
   id $idType,
   bloodSugar $doubleType,
   isBeforeMeal $intType,
+  createdAt $textType
+  )
+''');
+
+    await db.execute('''
+CREATE TABLE exercise_logs (
+  id $idType,
+  exerciseType $textType,
+  durationMinutes $intType,
+  beforeBloodSugar $nullableDoubleType,
+  afterBloodSugar $nullableDoubleType,
   createdAt $textType
   )
 ''');
@@ -95,5 +109,61 @@ CREATE TABLE blood_sugar_logs (
   Future close() async {
     final db = await instance.database;
     db.close();
+  }
+
+  // Exercise methods
+  Future<ExerciseLog> createExercise(ExerciseLog log) async {
+    final db = await instance.database;
+    final id = await db.insert('exercise_logs', log.toJson());
+    return log.copyWith(id: id);
+  }
+
+  Future<ExerciseLog> readExercise(int id) async {
+    final db = await instance.database;
+    final maps = await db.query(
+      'exercise_logs',
+      columns: [
+        'id',
+        'exerciseType',
+        'durationMinutes',
+        'beforeBloodSugar',
+        'afterBloodSugar',
+        'createdAt'
+      ],
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+
+    if (maps.isNotEmpty) {
+      return ExerciseLog.fromJson(maps.first);
+    } else {
+      throw Exception('ID $id not found');
+    }
+  }
+
+  Future<List<ExerciseLog>> readAllExercises() async {
+    final db = await instance.database;
+    const orderBy = 'createdAt DESC';
+    final result = await db.query('exercise_logs', orderBy: orderBy);
+    return result.map((json) => ExerciseLog.fromJson(json)).toList();
+  }
+
+  Future<int> updateExercise(ExerciseLog log) async {
+    final db = await instance.database;
+    return db.update(
+      'exercise_logs',
+      log.toJson(),
+      where: 'id = ?',
+      whereArgs: [log.id],
+    );
+  }
+
+  Future<int> deleteExercise(int id) async {
+    final db = await instance.database;
+    return await db.delete(
+      'exercise_logs',
+      where: 'id = ?',
+      whereArgs: [id],
+    );
   }
 }
