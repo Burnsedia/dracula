@@ -40,7 +40,6 @@ void main() {
       final ThemeData theme = Theme.of(context);
 
       // Verify text colors provide good contrast on dark background
-      final backgroundColor = theme.scaffoldBackgroundColor!;
       final textColor = theme.textTheme.bodyLarge!.color!;
 
       // Calculate relative luminance (simplified check)
