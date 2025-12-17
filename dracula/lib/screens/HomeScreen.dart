@@ -2,8 +2,10 @@
 import 'package:flutter/material.dart';
 import "../models/bloodsugar.dart";
 import '../services/database_helper.dart';
+import '../services/settings_service.dart';
 import '../componets/sidebar.dart';
 import "./AddBloodSugar.dart";
+import "./settings.dart";
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -13,20 +15,36 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   List<BloodSugarLog> bloodSugarRecords = [];
   bool _isLoading = true;
+  BloodSugarUnit _displayUnit = BloodSugarUnit.mgdl;
+  bool _showTimezone = true;
 
   @override
   void initState() {
     super.initState();
-    _loadRecords();
+    _loadSettingsAndRecords();
   }
 
-  Future<void> _loadRecords() async {
+  Future<void> _loadSettingsAndRecords() async {
     setState(() => _isLoading = true);
+
+    // Load settings
+    final unit = await SettingsService().getBloodSugarUnit();
+    final showTimezone = await SettingsService().getShowTimezone();
+
+    // Load records
     final records = await DatabaseHelper.instance.readAll();
+
     setState(() {
+      _displayUnit = unit;
+      _showTimezone = showTimezone;
       bloodSugarRecords = records;
       _isLoading = false;
     });
+  }
+
+  Future<void> _loadRecords() async {
+    final records = await DatabaseHelper.instance.readAll();
+    setState(() => bloodSugarRecords = records);
   }
 
   void _showEditDeleteMenu(BuildContext context, BloodSugarLog record) {
@@ -114,11 +132,33 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  String _formatDateTime(DateTime dateTime) {
+    final date = dateTime.toString().split(' ')[0]; // YYYY-MM-DD
+    if (_showTimezone) {
+      final timezone = dateTime.timeZoneName;
+      return '$date ($timezone)';
+    }
+    return date;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Blood Sugar Tracker'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.settings),
+            onPressed: () async {
+              await Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const SettingsScreen()),
+              );
+              // Reload settings and records when returning from settings
+              await _loadSettingsAndRecords();
+            },
+          ),
+        ],
       ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
@@ -137,12 +177,15 @@ class _HomeScreenState extends State<HomeScreen> {
                         itemCount: bloodSugarRecords.length,
                         itemBuilder: (context, index) {
                           final record = bloodSugarRecords[index];
+                          final displayValue = SettingsService().convertToDisplayUnit(record.bloodSugar, _displayUnit);
+                          final unitString = SettingsService().getUnitDisplayString(_displayUnit);
+
                           return ListTile(
                             title: Text(
-                              'Blood Sugar: ${record.bloodSugar} mg/dL',
+                              'Blood Sugar: ${displayValue.toStringAsFixed(1)} $unitString',
                             ),
                             subtitle: Text(
-                              '${record.isBeforeMeal ? "Before" : "After"} meal • ${record.createdAt.toString().split(' ')[0]}',
+                              '${record.isBeforeMeal ? "Before" : "After"} meal • ${_formatDateTime(record.createdAt)}',
                             ),
                             onLongPress: () => _showEditDeleteMenu(context, record),
                           );
