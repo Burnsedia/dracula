@@ -1,22 +1,34 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import "./screens/HomeScreen.dart";
+import "./screens/onboarding.dart";
 import "./services/privacy_audit.dart";
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
   // Privacy audit: Ensure no telemetry or tracking
   assert(PrivacyAudit.auditDependencies(),
       'Privacy violation: Forbidden analytics packages detected');
 
-  runApp(BloodSugarApp());
+  // Check if onboarding is completed
+  final prefs = await SharedPreferences.getInstance();
+  final onboardingCompleted = prefs.getBool('onboarding_completed') ?? false;
+
+  runApp(BloodSugarApp(onboardingCompleted: onboardingCompleted));
 }
 
 class BloodSugarApp extends StatelessWidget {
+  final bool onboardingCompleted;
+
+  const BloodSugarApp({super.key, required this.onboardingCompleted});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Dracula',
       theme: _buildDraculaTheme(),
-      home: HomeScreen(),
+      home: onboardingCompleted ? HomeScreen() : OnboardingScreen(),
     );
   }
 
