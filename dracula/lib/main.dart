@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
 import "./screens/HomeScreen.dart";
+import "./services/privacy_audit.dart";
 
 void main() {
+  // Privacy audit: Ensure no telemetry or tracking
+  assert(PrivacyAudit.auditDependencies(), 'Privacy violation: Forbidden analytics packages detected');
+  assert(PrivacyAudit.verifyOfflineOperation(), 'Privacy violation: Network operations detected');
+
   runApp(BloodSugarApp());
 }
 
