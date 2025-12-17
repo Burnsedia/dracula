@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import "../models/bloodsugar.dart";
 import '../services/database_helper.dart';
@@ -65,7 +64,8 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               ListTile(
                 leading: const Icon(Icons.delete, color: Colors.red),
-                title: const Text('Delete', style: TextStyle(color: Colors.red)),
+                title:
+                    const Text('Delete', style: TextStyle(color: Colors.red)),
                 onTap: () {
                   Navigator.pop(context); // Close the bottom sheet
                   _confirmDelete(record);
@@ -97,7 +97,8 @@ class _HomeScreenState extends State<HomeScreen> {
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text('Delete Record'),
-          content: const Text('Are you sure you want to delete this blood sugar record?'),
+          content: const Text(
+              'Are you sure you want to delete this blood sugar record?'),
           actions: <Widget>[
             TextButton(
               child: const Text('Cancel'),
@@ -177,24 +178,32 @@ class _HomeScreenState extends State<HomeScreen> {
                         itemCount: bloodSugarRecords.length,
                         itemBuilder: (context, index) {
                           final record = bloodSugarRecords[index];
-                          final displayValue = SettingsService().convertToDisplayUnit(record.bloodSugar, _displayUnit);
-                          final unitString = SettingsService().getUnitDisplayString(_displayUnit);
+                          final displayValue = SettingsService()
+                              .convertToDisplayUnit(
+                                  record.bloodSugar, _displayUnit);
+                          final unitString = SettingsService()
+                              .getUnitDisplayString(_displayUnit);
 
-                          return ListTile(
-                            title: Text(
-                              'Blood Sugar: ${displayValue.toStringAsFixed(1)} $unitString',
+                          return Card(
+                            margin: const EdgeInsets.symmetric(
+                                horizontal: 16, vertical: 4),
+                            child: ListTile(
+                              title: Text(
+                                'Blood Sugar: ${displayValue.toStringAsFixed(1)} $unitString',
+                              ),
+                              subtitle: Text(
+                                '${record.isBeforeMeal ? "Before" : "After"} meal • ${_formatDateTime(record.createdAt)}',
+                              ),
+                              onLongPress: () =>
+                                  _showEditDeleteMenu(context, record),
                             ),
-                            subtitle: Text(
-                              '${record.isBeforeMeal ? "Before" : "After"} meal • ${_formatDateTime(record.createdAt)}',
-                            ),
-                            onLongPress: () => _showEditDeleteMenu(context, record),
                           );
                         },
                       ),
                     ),
                   ],
                 ),
-       floatingActionButton: FloatingActionButton(
+      floatingActionButton: FloatingActionButton(
         onPressed: () async {
           final newRecord = await Navigator.push(
             context,
@@ -210,4 +219,3 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 }
-
