@@ -53,38 +53,104 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
-          children: [             TextField(
-              controller: bloodSugarController,
-              keyboardType: TextInputType.number,
-              decoration: InputDecoration(
-                labelText: 'Blood Sugar (${SettingsService().getUnitDisplayString(_displayUnit)})',
-              ),
-            ),
-        
-            Column(
-              children: [
-                RadioListTile<bool>(
-                  title: Text("Before Meal"),
-                  value: true,
-                  groupValue: isBeforeMeal,
-                  onChanged: (bool? value) {
-                  setState(() {
-                   isBeforeMeal = value!;
-                 });
+           children: [
+             TextField(
+               controller: bloodSugarController,
+               keyboardType: TextInputType.number,
+               decoration: InputDecoration(
+                 labelText: 'Blood Sugar (${SettingsService().getUnitDisplayString(_displayUnit)})',
+               ),
+             ),
+
+             Column(
+               children: [
+                 RadioListTile(
+                   title: const Text("Before Meal"),
+                   value: true,
+                   groupValue: isBeforeMeal,
+                   onChanged: (value) => setState(() => isBeforeMeal = value ?? true),
+                 ),
+                 RadioListTile(
+                   title: const Text("After Meal"),
+                   value: false,
+                   groupValue: isBeforeMeal,
+                   onChanged: (value) => setState(() => isBeforeMeal = value ?? false),
+                 ),
+               ],
+             ),
+
+             FilledButton(
+               onPressed: () async {
+                 final bloodSugar = double.tryParse(bloodSugarController.text) ?? 0.0;
+
+                 if (bloodSugar > 0.0) {
+                   try {
+                     // Convert from display units back to mg/dL for storage
+                     final storageValue = SettingsService().convertFromDisplayUnit(bloodSugar, _displayUnit);
+
+                     if (widget.record != null) {
+                       // Update existing record
+                       final updatedRecord = widget.record!.copyWith(
+                         bloodSugar: storageValue,
+                         isBeforeMeal: isBeforeMeal,
+                       );
+
+                       await DatabaseHelper.instance.update(updatedRecord);
+
+                       if (mounted) {
+                         Navigator.pop(context, updatedRecord);
+                       }
+                     } else {
+                       // Create new record
+                       final newRecord = BloodSugarLog(
+                         bloodSugar: storageValue,
+                         isBeforeMeal: isBeforeMeal,
+                         createdAt: DateTime.now(),
+                       );
+
+                       final savedRecord = await DatabaseHelper.instance.create(newRecord);
+
+                       if (mounted) {
+                         Navigator.pop(context, savedRecord);
+                       }
+                     }
+                   } catch (e) {
+                     if (mounted) {
+                       ScaffoldMessenger.of(context).showSnackBar(
+                         const SnackBar(
+                           content: const Text('Failed to save record. Please try again.'),
+                         ),
+                       );
+                     }
+                   }
+                 } else {
+                   ScaffoldMessenger.of(context).showSnackBar(
+                     const SnackBar(
+                       content: const Text('Invalid input. Please enter valid values.'),
+                     ),
+                   );
+                 }
                },
-              ),
-               RadioListTile<bool>(
-                 title: Text("After Meal"),
-                 value: false,
-                 groupValue: isBeforeMeal,
-                  onChanged: (bool? value) {
-                   setState(() {
-                    isBeforeMeal = value!;
-                  });
-                 },
-                },
-              ),
-            ],
+               child: widget.record != null
+                 ? const Row(
+                     mainAxisSize: MainAxisSize.min,
+                     children: [
+                       const Icon(Icons.update),
+                       const SizedBox(width: 8),
+                       const Text('Update Record'),
+                     ],
+                   )
+                 : const Row(
+                     mainAxisSize: MainAxisSize.min,
+                     children: [
+                       const Icon(Icons.save),
+                       const SizedBox(width: 8),
+                       const Text('Save Record'),
+                     ],
+                   ),
+             ),
+
+           ],
             ),
             FilledButton.icon(
    onPressed: () async {
