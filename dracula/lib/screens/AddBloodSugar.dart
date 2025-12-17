@@ -4,19 +4,33 @@ import "../services/database_helper.dart";
 import "../componets/sidebar.dart";
 
 class AddRecordScreen extends StatefulWidget {
+  final BloodSugarLog? record;
+
+  const AddRecordScreen({super.key, this.record});
+
   @override
   _AddRecordScreenState createState() => _AddRecordScreenState();
 }
 
 class _AddRecordScreenState extends State<AddRecordScreen> {
-  TextEditingController bloodSugarController = TextEditingController();
-  bool isBeforeMeal = true; // true = Before Meal, false = After Meal
+  late TextEditingController bloodSugarController;
+  late bool isBeforeMeal;
+
+  @override
+  void initState() {
+    super.initState();
+    // Initialize with existing data if editing, or defaults if adding
+    bloodSugarController = TextEditingController(
+      text: widget.record?.bloodSugar.toString() ?? '',
+    );
+    isBeforeMeal = widget.record?.isBeforeMeal ?? true;
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Add Blood Sugar Record'),
+        title: Text(widget.record != null ? 'Edit Blood Sugar Record' : 'Add Blood Sugar Record'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -60,16 +74,31 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
 
      if (bloodSugar > 0.0) {
        try {
-         final newRecord = BloodSugarLog(
-           bloodSugar: bloodSugar,
-           isBeforeMeal: isBeforeMeal,
-           createdAt: DateTime.now(),
-         );
+         if (widget.record != null) {
+           // Update existing record
+           final updatedRecord = widget.record!.copyWith(
+             bloodSugar: bloodSugar,
+             isBeforeMeal: isBeforeMeal,
+           );
 
-         final savedRecord = await DatabaseHelper.instance.create(newRecord);
+           await DatabaseHelper.instance.update(updatedRecord);
 
-         if (mounted) {
-           Navigator.pop(context, savedRecord);
+           if (mounted) {
+             Navigator.pop(context, updatedRecord);
+           }
+         } else {
+           // Create new record
+           final newRecord = BloodSugarLog(
+             bloodSugar: bloodSugar,
+             isBeforeMeal: isBeforeMeal,
+             createdAt: DateTime.now(),
+           );
+
+           final savedRecord = await DatabaseHelper.instance.create(newRecord);
+
+           if (mounted) {
+             Navigator.pop(context, savedRecord);
+           }
          }
        } catch (e) {
          if (mounted) {
@@ -88,8 +117,8 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
        );
      }
    },
-   icon: const Icon(Icons.save),
-   label: const Text('Save Record'),
+   icon: const Icon(widget.record != null ? Icons.update : Icons.save),
+   label: Text(widget.record != null ? 'Update Record' : 'Save Record'),
  ),
 
           ],
