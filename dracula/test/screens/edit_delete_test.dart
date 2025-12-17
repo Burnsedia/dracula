@@ -3,10 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:dracula/screens/HomeScreen.dart';
 import 'package:dracula/screens/AddBloodSugar.dart';
-import 'package:sqflite/sqflite.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:dracula/services/database_helper.dart';
-import 'package:path/path.dart';
 
 void main() {
   // Initialize sqflite for testing
@@ -26,7 +24,8 @@ void main() {
   });
 
   group('HomeScreen - US-1.2 Edit/Delete Entry', () {
-    testWidgets('should show edit/delete options on long press', (WidgetTester tester) async {
+    testWidgets('should show edit/delete options on long press',
+        (WidgetTester tester) async {
       // Add a record to database first
       final testRecord = BloodSugarLog(
         bloodSugar: 120.0,
@@ -47,7 +46,8 @@ void main() {
       expect(find.text('Delete'), findsOneWidget);
     });
 
-    testWidgets('should delete entry after confirmation', (WidgetTester tester) async {
+    testWidgets('should delete entry after confirmation',
+        (WidgetTester tester) async {
       // Add a record to database first
       final testRecord = BloodSugarLog(
         bloodSugar: 120.0,
@@ -115,7 +115,8 @@ void main() {
   });
 
   group('AddRecordScreen - Edit Mode', () {
-    testWidgets('should pre-fill form with existing record data', (WidgetTester tester) async {
+    testWidgets('should pre-fill form with existing record data',
+        (WidgetTester tester) async {
       final existingRecord = BloodSugarLog(
         id: 1,
         bloodSugar: 140.0,
