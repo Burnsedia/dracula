@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../services/settings_service.dart';
+import 'CategoryManagement.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -34,7 +35,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Units changed to ${SettingsService().getUnitDisplayString(unit)}')),
+        SnackBar(
+            content: Text(
+                'Units changed to ${SettingsService().getUnitDisplayString(unit)}')),
       );
     }
   }
@@ -59,6 +62,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
           _buildSectionHeader('Display'),
           _buildTimezoneToggle(),
           const Divider(),
+          _buildSectionHeader('Categories'),
+          _buildCategoriesSection(),
+          const Divider(),
           _buildSectionHeader('About'),
           _buildAboutSection(),
         ],
@@ -72,9 +78,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
       child: Text(
         title,
         style: Theme.of(context).textTheme.titleMedium?.copyWith(
-          color: Theme.of(context).colorScheme.primary,
-          fontWeight: FontWeight.bold,
-        ),
+              color: Theme.of(context).colorScheme.primary,
+              fontWeight: FontWeight.bold,
+            ),
       ),
     );
   }
@@ -109,6 +115,20 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
   }
 
+  Widget _buildCategoriesSection() {
+    return ListTile(
+      title: const Text('Manage Categories'),
+      subtitle: const Text('Add or remove custom metrics'),
+      trailing: const Icon(Icons.arrow_forward),
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => CategoryManagementScreen()),
+        );
+      },
+    );
+  }
+
   Widget _buildAboutSection() {
     return const Padding(
       padding: EdgeInsets.all(16),
@@ -130,4 +150,3 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
   }
 }
-

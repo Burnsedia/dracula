@@ -2,6 +2,7 @@ import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import 'package:dracula/models/bloodsugar.dart';
 import 'package:dracula/models/exercise.dart';
+import 'package:dracula/models/category.dart';
 
 class DatabaseHelper {
   static final DatabaseHelper instance = DatabaseHelper._init();
@@ -47,6 +48,15 @@ CREATE TABLE exercise_logs (
   beforeBloodSugar $nullableDoubleType,
   afterBloodSugar $nullableDoubleType,
   createdAt $textType
+  )
+''');
+
+    await db.execute('''
+CREATE TABLE categories (
+  id $idType,
+  name $textType,
+  unit TEXT,
+  type $textType
   )
 ''');
   }
@@ -162,6 +172,55 @@ CREATE TABLE exercise_logs (
     final db = await instance.database;
     return await db.delete(
       'exercise_logs',
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+  }
+
+  // Category methods
+  Future<Category> createCategory(Category category) async {
+    final db = await instance.database;
+    final id = await db.insert('categories', category.toJson());
+    return category.copyWith(id: id);
+  }
+
+  Future<Category> readCategory(int id) async {
+    final db = await instance.database;
+    final maps = await db.query(
+      'categories',
+      columns: ['id', 'name', 'unit', 'type'],
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+
+    if (maps.isNotEmpty) {
+      return Category.fromJson(maps.first);
+    } else {
+      throw Exception('ID $id not found');
+    }
+  }
+
+  Future<List<Category>> readAllCategories() async {
+    final db = await instance.database;
+    const orderBy = 'name ASC';
+    final result = await db.query('categories', orderBy: orderBy);
+    return result.map((json) => Category.fromJson(json)).toList();
+  }
+
+  Future<int> updateCategory(Category category) async {
+    final db = await instance.database;
+    return db.update(
+      'categories',
+      category.toJson(),
+      where: 'id = ?',
+      whereArgs: [category.id],
+    );
+  }
+
+  Future<int> deleteCategory(int id) async {
+    final db = await instance.database;
+    return await db.delete(
+      'categories',
       where: 'id = ?',
       whereArgs: [id],
     );
