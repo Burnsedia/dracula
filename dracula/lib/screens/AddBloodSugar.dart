@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import "../models/bloodsugar.dart";
 import "../services/database_helper.dart";
+import "../services/settings_service.dart";
 import "../componets/sidebar.dart";
 
 class AddRecordScreen extends StatefulWidget {
@@ -15,15 +16,30 @@ class AddRecordScreen extends StatefulWidget {
 class _AddRecordScreenState extends State<AddRecordScreen> {
   late TextEditingController bloodSugarController;
   late bool isBeforeMeal;
+  BloodSugarUnit _displayUnit = BloodSugarUnit.mgdl;
 
   @override
   void initState() {
     super.initState();
+    _loadSettings();
     // Initialize with existing data if editing, or defaults if adding
     bloodSugarController = TextEditingController(
-      text: widget.record?.bloodSugar.toString() ?? '',
+      text: widget.record != null
+          ? SettingsService().convertToDisplayUnit(widget.record!.bloodSugar, _displayUnit).toString()
+          : '',
     );
     isBeforeMeal = widget.record?.isBeforeMeal ?? true;
+  }
+
+  Future<void> _loadSettings() async {
+    final unit = await SettingsService().getBloodSugarUnit();
+    setState(() => _displayUnit = unit);
+
+    // Update controller text if we have a record
+    if (widget.record != null) {
+      final displayValue = SettingsService().convertToDisplayUnit(widget.record!.bloodSugar, unit);
+      bloodSugarController.text = displayValue.toString();
+    }
   }
 
   @override
@@ -37,10 +53,12 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
-          children: [ TextField(
+          children: [             TextField(
               controller: bloodSugarController,
               keyboardType: TextInputType.number,
-              decoration: InputDecoration(labelText: 'Blood Sugar (mg/dL)'),
+              decoration: InputDecoration(
+                labelText: 'Blood Sugar (${SettingsService().getUnitDisplayString(_displayUnit)})',
+              ),
             ),
         
             Column(
@@ -72,12 +90,15 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
    onPressed: () async {
      final bloodSugar = double.tryParse(bloodSugarController.text) ?? 0.0;
 
-     if (bloodSugar > 0.0) {
-       try {
+      if (bloodSugar > 0.0) {
+        try {
+          // Convert from display units back to mg/dL for storage
+          final storageValue = SettingsService().convertFromDisplayUnit(bloodSugar, _displayUnit);
+
          if (widget.record != null) {
            // Update existing record
            final updatedRecord = widget.record!.copyWith(
-             bloodSugar: bloodSugar,
+             bloodSugar: storageValue,
              isBeforeMeal: isBeforeMeal,
            );
 
@@ -89,7 +110,7 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
          } else {
            // Create new record
            final newRecord = BloodSugarLog(
-             bloodSugar: bloodSugar,
+             bloodSugar: storageValue,
              isBeforeMeal: isBeforeMeal,
              createdAt: DateTime.now(),
            );
