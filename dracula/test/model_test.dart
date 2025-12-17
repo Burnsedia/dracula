@@ -7,8 +7,8 @@ void main() {
       final now = DateTime.now();
       final json = {
         'bloodSugar': 120.0,
-        'isBeforeMeal': true,
-        'createdAt': now,
+        'isBeforeMeal': 1,
+        'createdAt': now.toIso8601String(),
       };
       final log = BloodSugarLog.fromJson(json);
 
@@ -27,8 +27,8 @@ void main() {
       final json = log.toJson();
 
       expect(json['bloodSugar'], 120.0);
-      expect(json['isBeforeMeal'], true);
-      expect(json['createdAt'], now);
+      expect(json['isBeforeMeal'], 1);
+      expect(json['createdAt'], now.toIso8601String());
     });
   });
 }

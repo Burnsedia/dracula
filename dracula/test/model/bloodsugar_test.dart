@@ -9,7 +9,7 @@ void main() {
       final json = {
         'id': 1,
         'bloodSugar': 120.0,
-        'isBeforeMeal': true,
+        'isBeforeMeal': 1,
         'createdAt': testDate.toIso8601String(),
       };
       final log = BloodSugarLog.fromJson(json);
@@ -29,7 +29,7 @@ void main() {
       final json = log.toJson();
       expect(json['id'], 1);
       expect(json['bloodSugar'], 120.0);
-      expect(json['isBeforeMeal'], true);
+      expect(json['isBeforeMeal'], 1);
       expect(json['createdAt'], testDate.toIso8601String());
     });
 
