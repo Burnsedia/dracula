@@ -19,7 +19,7 @@ void main() {
     });
 
     tearDown(() async {
-      await dbHelper.close();
+      // await dbHelper.close(); // Commented out for testing
     });
 
     test('create inserts a BloodSugarLog and returns it with id', () async {
@@ -55,10 +55,15 @@ void main() {
       expect(() => dbHelper.read(999), throwsException);
     });
 
-    test('readAll returns all BloodSugarLogs ordered by createdAt DESC', () async {
+    test('readAll returns all BloodSugarLogs ordered by createdAt DESC',
+        () async {
       final now = DateTime.now();
-      final log1 = BloodSugarLog(bloodSugar: 100.0, isBeforeMeal: true, createdAt: now.subtract(Duration(hours: 1)));
-      final log2 = BloodSugarLog(bloodSugar: 110.0, isBeforeMeal: false, createdAt: now);
+      final log1 = BloodSugarLog(
+          bloodSugar: 100.0,
+          isBeforeMeal: true,
+          createdAt: now.subtract(Duration(hours: 1)));
+      final log2 =
+          BloodSugarLog(bloodSugar: 110.0, isBeforeMeal: false, createdAt: now);
 
       await dbHelper.create(log1);
       await dbHelper.create(log2);
@@ -78,7 +83,8 @@ void main() {
       );
 
       final created = await dbHelper.create(log);
-      final updatedLog = created.copyWith(bloodSugar: 125.0, isBeforeMeal: false);
+      final updatedLog =
+          created.copyWith(bloodSugar: 125.0, isBeforeMeal: false);
 
       final rowsAffected = await dbHelper.update(updatedLog);
       expect(rowsAffected, 1);
