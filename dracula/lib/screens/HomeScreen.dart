@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import "../models/bloodsugar.dart";
-import '../services/database_helper.dart';
-import '../services/settings_service.dart';
-import '../componets/sidebar.dart';
+import "../services/database_helper.dart";
+import "../services/settings_service.dart";
+import "../componets/sidebar.dart";
 import "./AddBloodSugar.dart";
 import "./settings.dart";
+import "./ExerciseList.dart";
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -148,6 +149,16 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
         title: const Text('Blood Sugar Tracker'),
         actions: [
+          IconButton(
+            icon: const Icon(Icons.fitness_center),
+            onPressed: () async {
+              await Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => ExerciseListScreen()),
+              );
+            },
+            tooltip: 'Exercise Tracker',
+          ),
           IconButton(
             icon: const Icon(Icons.settings),
             onPressed: () async {
