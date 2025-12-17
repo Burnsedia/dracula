@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../services/settings_service.dart';
+import '../services/export_service.dart';
 import 'CategoryManagement.dart';
 
 class SettingsScreen extends StatefulWidget {
@@ -62,6 +63,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
           _buildSectionHeader('Display'),
           _buildTimezoneToggle(),
           const Divider(),
+          _buildSectionHeader('Export Data'),
+          _buildExportSection(),
+          const Divider(),
           _buildSectionHeader('Categories'),
           _buildCategoriesSection(),
           const Divider(),
@@ -113,6 +117,116 @@ class _SettingsScreenState extends State<SettingsScreen> {
       value: _showTimezone,
       onChanged: _saveTimezone,
     );
+  }
+
+  Widget _buildExportSection() {
+    return Column(
+      children: [
+        ListTile(
+          title: const Text('Export Blood Sugar Data'),
+          subtitle: const Text('Download CSV or TXT file'),
+          trailing: const Icon(Icons.download),
+          onTap: () => _showExportDialog('blood_sugar'),
+        ),
+        ListTile(
+          title: const Text('Export Exercise Data'),
+          subtitle: const Text('Download CSV file'),
+          trailing: const Icon(Icons.download),
+          onTap: () => _showExportDialog('exercise'),
+        ),
+        ListTile(
+          title: const Text('Export Database Backup'),
+          subtitle: const Text('Full SQLite database file'),
+          trailing: const Icon(Icons.backup),
+          onTap: () => _exportDatabase(),
+        ),
+      ],
+    );
+  }
+
+  void _showExportDialog(String type) {
+    DateTime? startDate;
+    DateTime? endDate;
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(
+            'Export ${type == 'blood_sugar' ? 'Blood Sugar' : 'Exercise'} Data'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              title: const Text('All Data'),
+              leading: const Icon(Icons.all_inclusive),
+              onTap: () => _performExport(type, null, null),
+            ),
+            ListTile(
+              title: const Text('Last 7 Days'),
+              leading: const Icon(Icons.calendar_view_week),
+              onTap: () => _performExport(
+                  type, DateTime.now().subtract(const Duration(days: 7)), null),
+            ),
+            ListTile(
+              title: const Text('Last 30 Days'),
+              leading: const Icon(Icons.calendar_view_month),
+              onTap: () => _performExport(type,
+                  DateTime.now().subtract(const Duration(days: 30)), null),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _performExport(
+      String type, DateTime? start, DateTime? end) async {
+    Navigator.pop(context); // Close dialog
+
+    try {
+      if (type == 'blood_sugar') {
+        await ExportService.exportBloodSugarToCSV(
+            startDate: start, endDate: end);
+      } else {
+        await ExportService.exportExercisesToCSV(
+            startDate: start, endDate: end);
+      }
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Export completed')),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Export failed')),
+        );
+      }
+    }
+  }
+
+  Future<void> _exportDatabase() async {
+    try {
+      await ExportService.exportDatabase();
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Database backup completed')),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Backup failed')),
+        );
+      }
+    }
   }
 
   Widget _buildCategoriesSection() {
