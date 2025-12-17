@@ -44,12 +44,12 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
                  title: Text("After Meal"),
                  value: false,
                  groupValue: isBeforeMeal,
-                 onChanged: (bool? value) {
-                  setState(() {
-                   isBeforeMeal = value!;
-                 }
-                );
-               },
+                  onChanged: (bool? value) {
+                   setState(() {
+                    isBeforeMeal = value!;
+                  });
+                 },
+                },
               ),
             ],
             ),
