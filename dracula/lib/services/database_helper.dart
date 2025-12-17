@@ -17,7 +17,7 @@ class DatabaseHelper {
 
   Future<Database> _initDB(String filePath) async {
     final dbPath = await getDatabasesPath();
-    final path = join(dbPath, 'dracula_v3.db');
+    final path = join(dbPath, 'dracula_v4.db');
 
     return await openDatabase(path,
         version: 2, onCreate: _createDB, onUpgrade: _upgradeDB);
