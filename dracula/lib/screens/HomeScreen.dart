@@ -29,6 +29,91 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
+  void _showEditDeleteMenu(BuildContext context, BloodSugarLog record) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return SafeArea(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              ListTile(
+                leading: const Icon(Icons.edit),
+                title: const Text('Edit'),
+                onTap: () {
+                  Navigator.pop(context); // Close the bottom sheet
+                  _editRecord(record);
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.delete, color: Colors.red),
+                title: const Text('Delete', style: TextStyle(color: Colors.red)),
+                onTap: () {
+                  Navigator.pop(context); // Close the bottom sheet
+                  _confirmDelete(record);
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  void _editRecord(BloodSugarLog record) async {
+    final updatedRecord = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => AddRecordScreen(record: record),
+      ),
+    );
+
+    if (updatedRecord != null) {
+      await _loadRecords(); // Refresh from database
+    }
+  }
+
+  void _confirmDelete(BloodSugarLog record) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Delete Record'),
+          content: const Text('Are you sure you want to delete this blood sugar record?'),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: const Text('Delete'),
+              style: TextButton.styleFrom(foregroundColor: Colors.red),
+              onPressed: () async {
+                Navigator.of(context).pop(); // Close dialog
+                await _deleteRecord(record);
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _deleteRecord(BloodSugarLog record) async {
+    if (record.id != null) {
+      await DatabaseHelper.instance.delete(record.id!);
+      await _loadRecords(); // Refresh from database
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Record deleted successfully')),
+        );
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -59,6 +144,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             subtitle: Text(
                               '${record.isBeforeMeal ? "Before" : "After"} meal • ${record.createdAt.toString().split(' ')[0]}',
                             ),
+                            onLongPress: () => _showEditDeleteMenu(context, record),
                           );
                         },
                       ),
