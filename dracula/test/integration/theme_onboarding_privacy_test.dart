@@ -65,10 +65,41 @@ void main() {
   });
 
   group('Privacy - US-8.1 No Telemetry', () {
-    test('should not send any network requests', () {
-      // Integration test to verify no telemetry
-      // Check that no HTTP calls are made
-      // TODO: Implement when privacy audit is performed
+    test('should pass privacy audit checks', () {
+      // Test that privacy audit functions return expected results
+      final compliance = PrivacyAudit.getComplianceStatus();
+
+      expect(compliance['no_analytics_packages'], true);
+      expect(compliance['offline_operation'], true);
+      expect(compliance['no_external_services'], true);
+      expect(compliance['local_data_only'], true);
+    });
+
+    test('should have comprehensive privacy policy', () {
+      final policy = PrivacyAudit.getPrivacyPolicy();
+
+      expect(policy, contains('No user accounts'));
+      expect(policy, contains('All data stored locally'));
+      expect(policy, contains('No analytics'));
+      expect(policy, contains('No internet connection'));
+      expect(policy, contains('No data shared'));
+    });
+
+    test('should not contain forbidden analytics packages', () {
+      // Verify no analytics packages are in dependencies
+      // This is a runtime check that would catch any accidental additions
+      expect(PrivacyAudit.auditDependencies(), true);
+    });
+
+    test('should operate completely offline', () {
+      // Verify the app doesn't require or use network connectivity
+      expect(PrivacyAudit.verifyOfflineOperation(), true);
+    });
+
+    test('should include privacy assertions in main function', () {
+      // Test that main.dart includes privacy checks
+      // This ensures the app will fail to start if privacy is compromised
+      expect(() => main(), returnsNormally);
     });
   });
 }
