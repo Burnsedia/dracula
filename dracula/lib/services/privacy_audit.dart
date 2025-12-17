@@ -2,25 +2,6 @@
 /// Ensures no telemetry or external data collection occurs
 
 class PrivacyAudit {
-  /// List of known analytics and tracking packages that should NOT be present
-  static const List<String> _forbiddenPackages = [
-    'firebase_analytics',
-    'firebase_crashlytics',
-    'firebase_performance',
-    'google_analytics',
-    'amplitude_flutter',
-    'mixpanel_flutter',
-    'segment_flutter',
-    'appsflyer_sdk',
-    'adjust_sdk',
-    'facebook_app_events',
-    'crashlytics',
-    'sentry_flutter',
-    'datadog_flutter',
-    'newrelic_mobile',
-    'instabug_flutter',
-  ];
-
   /// Audit the app's dependencies for privacy compliance
   /// Returns true if no forbidden packages are found
   static bool auditDependencies() {
