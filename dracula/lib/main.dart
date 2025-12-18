@@ -33,11 +33,11 @@ class BloodSugarApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AppLockScreen(
-      child: MaterialApp(
-        title: 'Dracula',
-        theme: _buildDraculaTheme(),
-        home: onboardingCompleted ? HomeScreen() : OnboardingScreen(),
+    return MaterialApp(
+      title: 'Dracula',
+      theme: _buildDraculaTheme(),
+      home: AppLockScreen(
+        child: onboardingCompleted ? HomeScreen() : OnboardingScreen(),
       ),
     );
   }
