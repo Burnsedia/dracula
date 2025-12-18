@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import "../models/bloodsugar.dart";
+import "../models/category.dart";
 import "../services/database_helper.dart";
 import "../services/settings_service.dart";
 import "../componets/sidebar.dart";
@@ -16,6 +17,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   List<BloodSugarLog> bloodSugarRecords = [];
+  Map<int, Category> categoriesMap = {};
   bool _isLoading = true;
   BloodSugarUnit _displayUnit = BloodSugarUnit.mgdl;
   bool _showTimezone = true;
@@ -33,13 +35,16 @@ class _HomeScreenState extends State<HomeScreen> {
     final unit = await SettingsService().getBloodSugarUnit();
     final showTimezone = await SettingsService().getShowTimezone();
 
-    // Load records
+    // Load records and categories
     final records = await DatabaseHelper.instance.readAll();
+    final categories = await DatabaseHelper.instance.readAllCategories();
+    final categoriesMap = {for (var cat in categories) cat.id!: cat};
 
     setState(() {
       _displayUnit = unit;
       _showTimezone = showTimezone;
       bloodSugarRecords = records;
+      this.categoriesMap = categoriesMap;
       _isLoading = false;
     });
   }
@@ -328,7 +333,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   'Blood Sugar: ${displayValue.toStringAsFixed(1)} $unitString',
                                 ),
                                 subtitle: Text(
-                                  '${record.isBeforeMeal ? "Before" : "After"} meal • ${_formatDateTime(record.createdAt)}',
+                                  '${record.isBeforeMeal ? "Before" : "After"} meal${record.categoryId != null && categoriesMap[record.categoryId] != null ? " • ${categoriesMap[record.categoryId]!.name}" : ""} • ${_formatDateTime(record.createdAt)}',
                                 ),
                                 onLongPress: () =>
                                     _showEditDeleteMenu(context, record),

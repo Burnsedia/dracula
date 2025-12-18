@@ -21,7 +21,7 @@ class DatabaseHelper {
     final path = join(dbPath, 'dracula_v4.db');
 
     return await openDatabase(path,
-        version: 2, onCreate: _createDB, onUpgrade: _upgradeDB);
+        version: 3, onCreate: _createDB, onUpgrade: _upgradeDB);
   }
 
   Future _createDB(Database db, int version) async {
@@ -36,6 +36,7 @@ CREATE TABLE blood_sugar_logs (
   id $idType,
   bloodSugar $doubleType,
   isBeforeMeal $intType,
+  categoryId INTEGER,
   createdAt $textType
   )
 ''');
@@ -65,6 +66,11 @@ CREATE TABLE categories (
     if (oldVersion < 2) {
       await db.execute('DROP TABLE IF EXISTS blood_sugar_logs');
       await _createDB(db, newVersion);
+    }
+    if (oldVersion < 3) {
+      // Add categoryId column to blood_sugar_logs
+      await db.execute(
+          'ALTER TABLE blood_sugar_logs ADD COLUMN categoryId INTEGER');
     }
   }
 
