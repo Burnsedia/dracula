@@ -109,7 +109,7 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
                     setState(() => selectedCategoryId = value),
               ),
             FilledButton(
-              onPressed: () {
+              onPressed: () async {
                 final bloodSugar =
                     double.tryParse(bloodSugarController.text) ?? 0.0;
 
@@ -125,11 +125,10 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
                         categoryId: selectedCategoryId,
                       );
 
-                      DatabaseHelper.instance.update(updatedRecord).then((_) {
-                        if (mounted) {
-                          Navigator.pop(context, updatedRecord);
-                        }
-                      });
+                      await DatabaseHelper.instance.update(updatedRecord);
+                      if (mounted) {
+                        Navigator.pop(context, updatedRecord);
+                      }
                     } else {
                       final newRecord = BloodSugarLog(
                         bloodSugar: storageValue,
@@ -138,31 +137,30 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
                         createdAt: DateTime.now(),
                       );
 
-                      DatabaseHelper.instance
-                          .create(newRecord)
-                          .then((savedRecord) {
-                        if (mounted) {
-                          Navigator.pop(context, savedRecord);
-                        }
-                      });
+                      final savedRecord =
+                          await DatabaseHelper.instance.create(newRecord);
+                      if (mounted) {
+                        Navigator.pop(context, savedRecord);
+                      }
                     }
                   } catch (e) {
                     if (mounted) {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: const Text(
-                              'Failed to save record. Please try again.'),
+                        SnackBar(
+                          content: Text('Failed to save record: $e'),
                         ),
                       );
                     }
                   }
                 } else {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: const Text(
-                          'Invalid input. Please enter valid values.'),
-                    ),
-                  );
+                  if (mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content:
+                            Text('Please enter a valid blood sugar value.'),
+                      ),
+                    );
+                  }
                 }
               },
               child: const Text('Save Record'),
