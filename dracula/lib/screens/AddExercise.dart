@@ -17,6 +17,29 @@ class _AddExerciseScreenState extends State<AddExerciseScreen> {
   late TextEditingController beforeBloodSugarController;
   late TextEditingController afterBloodSugarController;
 
+  final List<String> premadeExercises = [
+    'Running',
+    'Cycling',
+    'Swimming',
+    'Walking',
+    'Yoga',
+    'Pilates',
+    'Weightlifting',
+    'Bench Press',
+    'Squats',
+    'Deadlifts',
+    'Push-ups',
+    'Pull-ups',
+    'Jumping Jacks',
+    'Burpees',
+    'Planks',
+    'Sit-ups',
+    'Lunges',
+    'Bicep Curls',
+    'Tricep Dips',
+    'Shoulder Press',
+  ];
+
   @override
   void initState() {
     super.initState();
@@ -42,16 +65,33 @@ class _AddExerciseScreenState extends State<AddExerciseScreen> {
             ? 'Edit Exercise Record'
             : 'Add Exercise Record'),
       ),
-      body: Padding(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            const Text(
+              'Premade Exercises',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 8),
+            Wrap(
+              spacing: 8.0,
+              runSpacing: 8.0,
+              children: premadeExercises.map((exercise) {
+                return ElevatedButton(
+                  onPressed: () {
+                    exerciseTypeController.text = exercise;
+                  },
+                  child: Text(exercise),
+                );
+              }).toList(),
+            ),
+            const SizedBox(height: 16),
             TextField(
               controller: exerciseTypeController,
               decoration: const InputDecoration(
-                labelText: 'Exercise Type',
+                labelText: 'Exercise Type (or select from above)',
               ),
             ),
             TextField(
