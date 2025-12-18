@@ -41,6 +41,7 @@ dependencies:
   flutter_local_notifications: ^16.3.2
   local_auth: ^2.1.7
   file_picker: ^6.1.1
+  intl: any
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -68,6 +69,9 @@ flutter:
   # included with your application, so that you can use the icons in
   # the material Icons class.
   uses-material-design: true
+
+  # Enable desktop builds
+  desktop: enabled
 
   # To add assets to your application, add an assets section, like this:
   # assets:
