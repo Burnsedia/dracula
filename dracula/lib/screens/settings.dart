@@ -78,6 +78,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
           _buildSectionHeader('Reminders'),
           _buildReminderSection(),
           const Divider(),
+          _buildSectionHeader('Import Data'),
+          _buildImportSection(),
+          const Divider(),
           _buildSectionHeader('Export Data'),
           _buildExportSection(),
           const Divider(),
@@ -202,6 +205,117 @@ class _SettingsScreenState extends State<SettingsScreen> {
       value: _appLockEnabled,
       onChanged: _toggleAppLock,
     );
+  }
+
+  Widget _buildImportSection() {
+    return Column(
+      children: [
+        ListTile(
+          title: const Text('Import Blood Sugar Data'),
+          subtitle: const Text('Import from CSV file'),
+          trailing: const Icon(Icons.upload),
+          onTap: () => _importBloodSugar(),
+        ),
+        ListTile(
+          title: const Text('Restore Database'),
+          subtitle: const Text('Restore from backup file'),
+          trailing: const Icon(Icons.restore),
+          onTap: () => _restoreDatabase(),
+        ),
+      ],
+    );
+  }
+
+  Future<void> _importBloodSugar() async {
+    final filePath = await ExportService.pickCsvFile();
+    if (filePath == null) return;
+
+    try {
+      final csvData = await ExportService.parseCsvForImport(filePath);
+
+      if (csvData.isEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('No data found in CSV file')),
+        );
+        return;
+      }
+
+      // For simplicity, assume standard format
+      // In a real app, show field mapping dialog
+      final fieldMapping = {
+        'bloodSugar': 'Blood Sugar',
+        'isBeforeMeal': 'Before Meal',
+        'date': 'Date',
+        'time': 'Time',
+      };
+
+      final result = await ExportService.importBloodSugarFromCsv(
+        csvData: csvData,
+        fieldMapping: fieldMapping,
+      );
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+              content: Text(
+                  'Imported ${result.importedCount} records, skipped ${result.skippedCount}')),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Import failed: $e')),
+        );
+      }
+    }
+  }
+
+  Future<void> _restoreDatabase() async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Restore Database'),
+        content: const Text(
+            'This will replace your current data with the backup. Are you sure?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: const Text('Restore'),
+            style: TextButton.styleFrom(foregroundColor: Colors.red),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed != true) return;
+
+    final filePath = await ExportService.pickDatabaseFile();
+    if (filePath == null) return;
+
+    try {
+      final success = await ExportService.restoreDatabase(filePath);
+      if (success) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+                content:
+                    Text('Database restored successfully. Restart the app.')),
+          );
+        }
+      } else {
+        throw Exception('Restore failed');
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Restore failed: $e')),
+        );
+      }
+    }
   }
 
   Widget _buildExportSection() {
