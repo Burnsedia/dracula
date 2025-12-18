@@ -4,12 +4,7 @@ class Category {
   final String? unit;
   final String type; // 'numeric', 'text', etc.
 
-  Category({
-    this.id,
-    required this.name,
-    this.unit,
-    this.type = 'numeric',
-  });
+  Category({this.id, required this.name, this.unit, this.type = 'numeric'});
 
   factory Category.fromJson(Map<String, dynamic> json) {
     return Category(
@@ -21,20 +16,10 @@ class Category {
   }
 
   Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'name': name,
-      'unit': unit,
-      'type': type,
-    };
+    return {'id': id, 'name': name, 'unit': unit, 'type': type};
   }
 
-  Category copyWith({
-    int? id,
-    String? name,
-    String? unit,
-    String? type,
-  }) {
+  Category copyWith({int? id, String? name, String? unit, String? type}) {
     return Category(
       id: id ?? this.id,
       name: name ?? this.name,
