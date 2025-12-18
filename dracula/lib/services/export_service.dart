@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:csv/csv.dart';
+import 'package:file_picker/file_picker.dart';
 import '../models/bloodsugar.dart';
 import '../models/exercise.dart';
 import '../services/database_helper.dart';
@@ -103,6 +104,129 @@ class ExportService {
     );
   }
 
+  static Future<String?> pickDatabaseFile() async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ['db'],
+    );
+
+    if (result != null) {
+      return result.files.single.path;
+    }
+    return null;
+  }
+
+  static Future<bool> restoreDatabase(String backupPath) async {
+    try {
+      final currentDbPath =
+          await DatabaseHelper.instance.database.then((db) => db.path);
+      final backupFile = File(backupPath);
+      final currentDbFile = File(currentDbPath);
+
+      // Close current database
+      await DatabaseHelper.instance.close();
+
+      // Copy backup over current database
+      await backupFile.copy(currentDbFile.path);
+
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  static Future<String?> pickCsvFile() async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ['csv'],
+    );
+
+    if (result != null) {
+      return result.files.single.path;
+    }
+    return null;
+  }
+
+  static Future<List<Map<String, dynamic>>> parseCsvForImport(
+      String filePath) async {
+    final file = File(filePath);
+    final csvString = await file.readAsString();
+    final csvData = const CsvToListConverter().convert(csvString);
+
+    if (csvData.isEmpty) return [];
+
+    // Return raw data for field mapping
+    final headers = csvData[0] as List;
+    final rows = csvData.sublist(1);
+
+    return rows.map((row) {
+      final map = <String, dynamic>{};
+      for (int i = 0; i < headers.length && i < row.length; i++) {
+        map[headers[i].toString()] = row[i];
+      }
+      return map;
+    }).toList();
+  }
+
+  static Future<ImportResult> importBloodSugarFromCsv({
+    required List<Map<String, dynamic>> csvData,
+    required Map<String, String> fieldMapping,
+  }) async {
+    int imported = 0;
+    int skipped = 0;
+    final errors = <String>[];
+
+    for (final row in csvData) {
+      try {
+        final bloodSugar =
+            double.tryParse(row[fieldMapping['bloodSugar']]?.toString() ?? '');
+        final isBeforeMealStr =
+            row[fieldMapping['isBeforeMeal']]?.toString().toLowerCase();
+        final isBeforeMeal = isBeforeMealStr == 'true' ||
+            isBeforeMealStr == '1' ||
+            isBeforeMealStr == 'yes';
+        final dateStr = row[fieldMapping['date']]?.toString();
+        final timeStr = row[fieldMapping['time']]?.toString();
+
+        if (bloodSugar == null || dateStr == null) {
+          skipped++;
+          continue;
+        }
+
+        DateTime createdAt;
+        try {
+          if (timeStr != null) {
+            createdAt = DateTime.parse('$dateStr $timeStr');
+          } else {
+            createdAt = DateTime.parse(dateStr);
+          }
+        } catch (e) {
+          errors.add('Invalid date format: $dateStr');
+          skipped++;
+          continue;
+        }
+
+        final record = BloodSugarLog(
+          bloodSugar: bloodSugar,
+          isBeforeMeal: isBeforeMeal,
+          createdAt: createdAt,
+        );
+
+        await DatabaseHelper.instance.create(record);
+        imported++;
+      } catch (e) {
+        errors.add('Error importing row: $e');
+        skipped++;
+      }
+    }
+
+    return ImportResult(
+      importedCount: imported,
+      skippedCount: skipped,
+      errors: errors,
+    );
+  }
+
   static List<BloodSugarLog> _filterRecords(
       List<BloodSugarLog> records, DateTime? start, DateTime? end) {
     if (start == null && end == null) return records;
@@ -135,4 +259,16 @@ class ExportService {
       text: 'Exported data from Dracula',
     );
   }
+}
+
+class ImportResult {
+  final int importedCount;
+  final int skippedCount;
+  final List<String> errors;
+
+  ImportResult({
+    required this.importedCount,
+    required this.skippedCount,
+    required this.errors,
+  });
 }

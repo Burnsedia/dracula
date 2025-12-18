@@ -7,6 +7,7 @@ import "./AddBloodSugar.dart";
 import "./settings.dart";
 import "./ExerciseList.dart";
 import "./ChartsScreen.dart";
+import "./AnalyticsScreen.dart";
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -258,6 +259,16 @@ class _HomeScreenState extends State<HomeScreen> {
               );
             },
             tooltip: 'View Charts',
+          ),
+          IconButton(
+            icon: const Icon(Icons.analytics),
+            onPressed: () async {
+              await Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => AnalyticsScreen()),
+              );
+            },
+            tooltip: 'View Analytics',
           ),
           IconButton(
             icon: const Icon(Icons.fitness_center),
