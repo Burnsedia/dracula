@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../services/settings_service.dart';
 import '../services/export_service.dart';
+import '../services/notification_service.dart';
 import 'CategoryManagement.dart';
 
 class SettingsScreen extends StatefulWidget {
@@ -13,6 +14,7 @@ class SettingsScreen extends StatefulWidget {
 class _SettingsScreenState extends State<SettingsScreen> {
   BloodSugarUnit _selectedUnit = BloodSugarUnit.mgdl;
   bool _showTimezone = true;
+  TimeOfDay? _reminderTime;
 
   @override
   void initState() {
@@ -23,10 +25,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Future<void> _loadSettings() async {
     final unit = await SettingsService().getBloodSugarUnit();
     final showTimezone = await SettingsService().getShowTimezone();
+    final reminderTime = await NotificationService().getReminderTime();
 
     setState(() {
       _selectedUnit = unit;
       _showTimezone = showTimezone;
+      _reminderTime = reminderTime;
     });
   }
 
@@ -62,6 +66,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
           const Divider(),
           _buildSectionHeader('Display'),
           _buildTimezoneToggle(),
+          const Divider(),
+          _buildSectionHeader('Reminders'),
+          _buildReminderSection(),
           const Divider(),
           _buildSectionHeader('Export Data'),
           _buildExportSection(),
@@ -117,6 +124,54 @@ class _SettingsScreenState extends State<SettingsScreen> {
       value: _showTimezone,
       onChanged: _saveTimezone,
     );
+  }
+
+  Widget _buildReminderSection() {
+    return Column(
+      children: [
+        ListTile(
+          title: const Text('Daily Reminder'),
+          subtitle: Text(_reminderTime != null
+              ? 'Set for ${_reminderTime!.format(context)}'
+              : 'Not set'),
+          trailing: const Icon(Icons.schedule),
+          onTap: () => _setReminderTime(),
+        ),
+        if (_reminderTime != null)
+          ListTile(
+            title: const Text('Disable Reminder'),
+            trailing: const Icon(Icons.cancel),
+            onTap: () => _cancelReminder(),
+          ),
+      ],
+    );
+  }
+
+  Future<void> _setReminderTime() async {
+    final TimeOfDay? picked = await showTimePicker(
+      context: context,
+      initialTime: _reminderTime ?? TimeOfDay.now(),
+    );
+
+    if (picked != null) {
+      await NotificationService().scheduleDailyReminder(picked);
+      setState(() => _reminderTime = picked);
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Reminder set for ${picked.format(context)}')),
+        );
+      }
+    }
+  }
+
+  Future<void> _cancelReminder() async {
+    await NotificationService().cancelReminder();
+    setState(() => _reminderTime = null);
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Reminder cancelled')),
+      );
+    }
   }
 
   Widget _buildExportSection() {

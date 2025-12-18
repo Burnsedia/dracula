@@ -3,9 +3,13 @@ import 'package:shared_preferences/shared_preferences.dart';
 import "./screens/HomeScreen.dart";
 import "./screens/onboarding.dart";
 import "./services/privacy_audit.dart";
+import "./services/notification_service.dart";
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialize notification service
+  await NotificationService().init();
 
   // Privacy audit: Ensure no telemetry or tracking
   assert(PrivacyAudit.auditDependencies(),
