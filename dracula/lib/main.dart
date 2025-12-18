@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import "./screens/HomeScreen.dart";
 import "./screens/onboarding.dart";
+import "./screens/app_lock_screen.dart";
 import "./services/privacy_audit.dart";
 import "./services/notification_service.dart";
 
@@ -29,10 +30,12 @@ class BloodSugarApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Dracula',
-      theme: _buildDraculaTheme(),
-      home: onboardingCompleted ? HomeScreen() : OnboardingScreen(),
+    return AppLockScreen(
+      child: MaterialApp(
+        title: 'Dracula',
+        theme: _buildDraculaTheme(),
+        home: onboardingCompleted ? HomeScreen() : OnboardingScreen(),
+      ),
     );
   }
 

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../services/settings_service.dart';
 import '../services/export_service.dart';
 import '../services/notification_service.dart';
@@ -15,6 +16,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   BloodSugarUnit _selectedUnit = BloodSugarUnit.mgdl;
   bool _showTimezone = true;
   TimeOfDay? _reminderTime;
+  bool _appLockEnabled = false;
 
   @override
   void initState() {
@@ -26,11 +28,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
     final unit = await SettingsService().getBloodSugarUnit();
     final showTimezone = await SettingsService().getShowTimezone();
     final reminderTime = await NotificationService().getReminderTime();
+    final prefs = await SharedPreferences.getInstance();
+    final appLockEnabled = prefs.getBool('app_lock_enabled') ?? false;
 
     setState(() {
       _selectedUnit = unit;
       _showTimezone = showTimezone;
       _reminderTime = reminderTime;
+      _appLockEnabled = appLockEnabled;
     });
   }
 
@@ -66,6 +71,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
           const Divider(),
           _buildSectionHeader('Display'),
           _buildTimezoneToggle(),
+          const Divider(),
+          _buildSectionHeader('Security'),
+          _buildSecuritySection(),
           const Divider(),
           _buildSectionHeader('Reminders'),
           _buildReminderSection(),
@@ -172,6 +180,28 @@ class _SettingsScreenState extends State<SettingsScreen> {
         const SnackBar(content: Text('Reminder cancelled')),
       );
     }
+  }
+
+  Future<void> _toggleAppLock(bool enabled) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('app_lock_enabled', enabled);
+    setState(() => _appLockEnabled = enabled);
+
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+            content: Text(enabled ? 'App lock enabled' : 'App lock disabled')),
+      );
+    }
+  }
+
+  Widget _buildSecuritySection() {
+    return SwitchListTile(
+      title: const Text('App Lock'),
+      subtitle: const Text('Require biometric authentication'),
+      value: _appLockEnabled,
+      onChanged: _toggleAppLock,
+    );
   }
 
   Widget _buildExportSection() {
