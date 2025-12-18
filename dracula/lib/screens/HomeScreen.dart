@@ -7,6 +7,7 @@ import "../componets/sidebar.dart";
 import "./AddBloodSugar.dart";
 import "./settings.dart";
 import "./ExerciseList.dart";
+import "./MealList.dart";
 import "./ChartsScreen.dart";
 import "./AnalyticsScreen.dart";
 
@@ -284,6 +285,16 @@ class _HomeScreenState extends State<HomeScreen> {
               );
             },
             tooltip: 'Exercise Tracker',
+          ),
+          IconButton(
+            icon: const Icon(Icons.restaurant),
+            onPressed: () async {
+              await Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => MealListScreen()),
+              );
+            },
+            tooltip: 'Meal Tracker',
           ),
           IconButton(
             icon: const Icon(Icons.settings),

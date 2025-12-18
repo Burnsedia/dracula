@@ -3,6 +3,7 @@ import 'package:path/path.dart';
 import 'package:dracula/models/bloodsugar.dart';
 import 'package:dracula/models/exercise.dart';
 import 'package:dracula/models/category.dart';
+import 'package:dracula/models/meal.dart';
 
 class DatabaseHelper {
   static final DatabaseHelper instance = DatabaseHelper._init();
@@ -21,7 +22,7 @@ class DatabaseHelper {
     final path = join(dbPath, 'dracula_v4.db');
 
     return await openDatabase(path,
-        version: 3, onCreate: _createDB, onUpgrade: _upgradeDB);
+        version: 4, onCreate: _createDB, onUpgrade: _upgradeDB);
   }
 
   Future _createDB(Database db, int version) async {
@@ -60,6 +61,26 @@ CREATE TABLE categories (
   type $textType
   )
 ''');
+
+    await db.execute('''
+CREATE TABLE meals (
+  id $idType,
+  name $textType,
+  dateTime $textType,
+  carbs $nullableDoubleType,
+  protein $nullableDoubleType,
+  fat $nullableDoubleType,
+  calories $nullableDoubleType,
+  fiber $nullableDoubleType,
+  sugar $nullableDoubleType,
+  sodium $nullableDoubleType,
+  vitaminC $nullableDoubleType,
+  calcium $nullableDoubleType,
+  iron $nullableDoubleType,
+  bloodSugarBefore $nullableDoubleType,
+  bloodSugarAfter $nullableDoubleType
+  )
+''');
   }
 
   Future _upgradeDB(Database db, int oldVersion, int newVersion) async {
@@ -71,6 +92,31 @@ CREATE TABLE categories (
       // Add categoryId column to blood_sugar_logs
       await db.execute(
           'ALTER TABLE blood_sugar_logs ADD COLUMN categoryId INTEGER');
+    }
+    if (oldVersion < 4) {
+      // Create meals table
+      const idType = 'INTEGER PRIMARY KEY AUTOINCREMENT';
+      const textType = 'TEXT NOT NULL';
+      const nullableDoubleType = 'REAL';
+      await db.execute('''
+CREATE TABLE meals (
+  id $idType,
+  name $textType,
+  dateTime $textType,
+  carbs $nullableDoubleType,
+  protein $nullableDoubleType,
+  fat $nullableDoubleType,
+  calories $nullableDoubleType,
+  fiber $nullableDoubleType,
+  sugar $nullableDoubleType,
+  sodium $nullableDoubleType,
+  vitaminC $nullableDoubleType,
+  calcium $nullableDoubleType,
+  iron $nullableDoubleType,
+  bloodSugarBefore $nullableDoubleType,
+  bloodSugarAfter $nullableDoubleType
+  )
+''');
     }
   }
 
@@ -227,6 +273,54 @@ CREATE TABLE categories (
     final db = await instance.database;
     return await db.delete(
       'categories',
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+  }
+
+  // Meal CRUD operations
+  Future<Meal> createMeal(Meal meal) async {
+    final db = await instance.database;
+    final id = await db.insert('meals', meal.toJson());
+    return meal.copyWith(id: id);
+  }
+
+  Future<Meal> readMeal(int id) async {
+    final db = await instance.database;
+    final maps = await db.query(
+      'meals',
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+
+    if (maps.isNotEmpty) {
+      return Meal.fromJson(maps.first);
+    } else {
+      throw Exception('ID $id not found');
+    }
+  }
+
+  Future<List<Meal>> readAllMeals() async {
+    final db = await instance.database;
+    const orderBy = 'dateTime DESC';
+    final result = await db.query('meals', orderBy: orderBy);
+    return result.map((json) => Meal.fromJson(json)).toList();
+  }
+
+  Future<int> updateMeal(Meal meal) async {
+    final db = await instance.database;
+    return db.update(
+      'meals',
+      meal.toJson(),
+      where: 'id = ?',
+      whereArgs: [meal.id],
+    );
+  }
+
+  Future<int> deleteMeal(int id) async {
+    final db = await instance.database;
+    return await db.delete(
+      'meals',
       where: 'id = ?',
       whereArgs: [id],
     );
