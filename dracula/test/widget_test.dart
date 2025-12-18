@@ -14,7 +14,7 @@ import 'package:dracula/screens/HomeScreen.dart';
 void main() {
   testWidgets('App builds', (WidgetTester tester) async {
     // Build our app and trigger a frame.
-    await tester.pumpWidget(BloodSugarApp());
+    await tester.pumpWidget(BloodSugarApp(onboardingCompleted: true));
 
     // Verify that the home screen is present.
     expect(find.byType(HomeScreen), findsOneWidget);

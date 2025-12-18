@@ -6,6 +6,7 @@ import "../componets/sidebar.dart";
 import "./AddBloodSugar.dart";
 import "./settings.dart";
 import "./ExerciseList.dart";
+import "./ChartsScreen.dart";
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -248,6 +249,16 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
         title: const Text('Blood Sugar Tracker'),
         actions: [
+          IconButton(
+            icon: const Icon(Icons.show_chart),
+            onPressed: () async {
+              await Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => ChartsScreen()),
+              );
+            },
+            tooltip: 'View Charts',
+          ),
           IconButton(
             icon: const Icon(Icons.fitness_center),
             onPressed: () async {

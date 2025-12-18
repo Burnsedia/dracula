@@ -8,7 +8,7 @@ void main() {
   group('Theme - US-4.1 Dracula Theme', () {
     testWidgets('should apply Dracula theme colors to app',
         (WidgetTester tester) async {
-      await tester.pumpWidget(BloodSugarApp());
+      await tester.pumpWidget(BloodSugarApp(onboardingCompleted: true));
       await tester.pumpAndSettle();
 
       // Get the theme from the app
@@ -33,7 +33,7 @@ void main() {
 
     testWidgets('should have proper contrast for accessibility',
         (WidgetTester tester) async {
-      await tester.pumpWidget(BloodSugarApp());
+      await tester.pumpWidget(BloodSugarApp(onboardingCompleted: true));
       await tester.pumpAndSettle();
 
       final BuildContext context = tester.element(find.byType(HomeScreen));
@@ -53,7 +53,7 @@ void main() {
 
     testWidgets('should apply theme to UI components',
         (WidgetTester tester) async {
-      await tester.pumpWidget(BloodSugarApp());
+      await tester.pumpWidget(BloodSugarApp(onboardingCompleted: true));
       await tester.pumpAndSettle();
 
       // Check that app bar has Dracula colors
