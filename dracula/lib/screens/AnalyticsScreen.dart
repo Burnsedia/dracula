@@ -15,6 +15,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
   List<BloodSugarLog> bloodSugarRecords = [];
   List<ExerciseLog> exerciseRecords = [];
   bool _isLoading = true;
+  BloodSugarUnit _displayUnit = BloodSugarUnit.mgdl;
 
   @override
   void initState() {
@@ -24,9 +25,11 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
 
   Future<void> _loadData() async {
     setState(() => _isLoading = true);
+    final unit = await SettingsService().getBloodSugarUnit();
     final bloodSugar = await DatabaseHelper.instance.readAll();
     final exercises = await DatabaseHelper.instance.readAllExercises();
     setState(() {
+      _displayUnit = unit;
       bloodSugarRecords = bloodSugar;
       exerciseRecords = exercises;
       _isLoading = false;
@@ -125,8 +128,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                                             .map((r) => r.bloodSugar)
                                             .reduce((a, b) => a + b) /
                                         recentRecords.length,
-                                    SettingsService().getBloodSugarUnit()
-                                        as BloodSugarUnit,
+                                    _displayUnit,
                                   )
                                   .toStringAsFixed(1)
                               : 'N/A',

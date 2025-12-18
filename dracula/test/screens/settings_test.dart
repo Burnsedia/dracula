@@ -23,10 +23,15 @@ void main() {
       expect(find.text('Settings'), findsOneWidget);
       expect(find.text('Blood Sugar Units'), findsOneWidget);
       expect(find.text('Display'), findsOneWidget);
-      expect(find.text('About'), findsOneWidget);
+      // Scroll to see more sections
+      await tester.scrollUntilVisible(find.text('Security'), 50);
+      expect(find.text('Security'), findsOneWidget);
+      await tester.scrollUntilVisible(find.text('Reminders'), 50);
+      expect(find.text('Reminders'), findsOneWidget);
     });
 
-    testWidgets('should allow changing blood sugar units', (WidgetTester tester) async {
+    testWidgets('should allow changing blood sugar units',
+        (WidgetTester tester) async {
       await tester.pumpWidget(MaterialApp(home: const SettingsScreen()));
       await tester.pumpAndSettle();
 
@@ -49,9 +54,13 @@ void main() {
       await tester.pumpWidget(MaterialApp(home: const SettingsScreen()));
       await tester.pumpAndSettle();
 
-      // Find the timezone toggle
-      final switchFinder = find.byType(Switch);
-      expect(switchFinder, findsOneWidget);
+      // Find the timezone text
+      expect(find.text('Show timezone in timestamps'), findsOneWidget);
+
+      // Find the switch for timezone (first switch in Display section)
+      final switches = find.byType(Switch);
+      expect(switches, findsAtLeast(1));
+      final switchFinder = switches.first;
 
       // Initially should be enabled
       Switch toggle = tester.widget(switchFinder);
@@ -70,6 +79,9 @@ void main() {
       await tester.pumpWidget(MaterialApp(home: const SettingsScreen()));
       await tester.pumpAndSettle();
 
+      // Scroll to About section
+      await tester.scrollUntilVisible(
+          find.text('Dracula Blood Sugar Tracker'), 50);
       expect(find.text('Dracula Blood Sugar Tracker'), findsOneWidget);
       expect(find.text('Version 1.0.0'), findsOneWidget);
       expect(find.text('Privacy-focused health tracking app'), findsOneWidget);
