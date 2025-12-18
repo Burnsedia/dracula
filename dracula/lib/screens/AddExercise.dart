@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import "../models/exercise.dart";
+import "../models/category.dart";
 import "../services/database_helper.dart";
 
 class AddExerciseScreen extends StatefulWidget {
@@ -16,6 +17,8 @@ class _AddExerciseScreenState extends State<AddExerciseScreen> {
   late TextEditingController durationController;
   late TextEditingController beforeBloodSugarController;
   late TextEditingController afterBloodSugarController;
+  int? selectedCategoryId;
+  List<Category> workoutCategories = [];
 
   final List<String> premadeExercises = [
     'Running',
@@ -55,6 +58,17 @@ class _AddExerciseScreenState extends State<AddExerciseScreen> {
     afterBloodSugarController = TextEditingController(
       text: widget.record?.afterBloodSugar?.toString() ?? '',
     );
+    selectedCategoryId = widget.record?.categoryId;
+    _loadWorkoutCategories();
+  }
+
+  Future<void> _loadWorkoutCategories() async {
+    final allCategories = await DatabaseHelper.instance.readAllCategories();
+    setState(() {
+      workoutCategories = allCategories
+          .where((cat) => cat.type == CategoryType.workout)
+          .toList();
+    });
   }
 
   @override
@@ -101,6 +115,24 @@ class _AddExerciseScreenState extends State<AddExerciseScreen> {
                 labelText: 'Duration (minutes)',
               ),
             ),
+            const SizedBox(height: 16),
+            DropdownButtonFormField<int>(
+              decoration:
+                  const InputDecoration(labelText: 'Category (optional)'),
+              value: selectedCategoryId,
+              items: [
+                const DropdownMenuItem<int>(
+                  value: null,
+                  child: Text('No category'),
+                ),
+                ...workoutCategories.map((category) => DropdownMenuItem<int>(
+                      value: category.id,
+                      child: Text(category.name),
+                    )),
+              ],
+              onChanged: (value) => setState(() => selectedCategoryId = value),
+            ),
+            const SizedBox(height: 16),
             TextField(
               controller: beforeBloodSugarController,
               keyboardType: TextInputType.number,
@@ -134,6 +166,7 @@ class _AddExerciseScreenState extends State<AddExerciseScreen> {
                       final updatedRecord = widget.record!.copyWith(
                         exerciseType: exerciseType,
                         durationMinutes: duration,
+                        categoryId: selectedCategoryId,
                         beforeBloodSugar: beforeBloodSugar,
                         afterBloodSugar: afterBloodSugar,
                       );
@@ -149,6 +182,7 @@ class _AddExerciseScreenState extends State<AddExerciseScreen> {
                       final newRecord = ExerciseLog(
                         exerciseType: exerciseType,
                         durationMinutes: duration,
+                        categoryId: selectedCategoryId,
                         beforeBloodSugar: beforeBloodSugar,
                         afterBloodSugar: afterBloodSugar,
                         createdAt: DateTime.now(),

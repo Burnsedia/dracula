@@ -22,7 +22,7 @@ class DatabaseHelper {
     final path = join(dbPath, 'dracula_v4.db');
 
     return await openDatabase(path,
-        version: 5, onCreate: _createDB, onUpgrade: _upgradeDB);
+        version: 6, onCreate: _createDB, onUpgrade: _upgradeDB);
   }
 
   Future _createDB(Database db, int version) async {
@@ -47,6 +47,7 @@ CREATE TABLE exercise_logs (
   id $idType,
   exerciseType $textType,
   durationMinutes $intType,
+  categoryId INTEGER,
   beforeBloodSugar $nullableDoubleType,
   afterBloodSugar $nullableDoubleType,
   createdAt $textType
@@ -67,6 +68,7 @@ CREATE TABLE meals (
   id $idType,
   name $textType,
   dateTime $textType,
+  categoryId INTEGER,
   carbs $nullableDoubleType,
   protein $nullableDoubleType,
   fat $nullableDoubleType,
@@ -122,6 +124,12 @@ CREATE TABLE meals (
       // Add mealId column to blood_sugar_logs
       await db
           .execute('ALTER TABLE blood_sugar_logs ADD COLUMN mealId INTEGER');
+    }
+    if (oldVersion < 6) {
+      // Add categoryId to meals and exercise_logs tables
+      await db.execute('ALTER TABLE meals ADD COLUMN categoryId INTEGER');
+      await db
+          .execute('ALTER TABLE exercise_logs ADD COLUMN categoryId INTEGER');
     }
   }
 

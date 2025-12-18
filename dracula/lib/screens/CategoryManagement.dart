@@ -35,6 +35,17 @@ class _CategoryManagementScreenState extends State<CategoryManagementScreen> {
     _showCategoryDialog(category: category);
   }
 
+  String _getCategoryTypeLabel(CategoryType type) {
+    switch (type) {
+      case CategoryType.general:
+        return 'General';
+      case CategoryType.meal:
+        return 'Meal';
+      case CategoryType.workout:
+        return 'Workout';
+    }
+  }
+
   void _deleteCategory(Category category) async {
     final confirmed = await showDialog<bool>(
       context: context,
@@ -70,7 +81,7 @@ class _CategoryManagementScreenState extends State<CategoryManagementScreen> {
   void _showCategoryDialog({Category? category}) {
     final nameController = TextEditingController(text: category?.name ?? '');
     final unitController = TextEditingController(text: category?.unit ?? '');
-    String selectedType = category?.type ?? 'numeric';
+    CategoryType selectedType = category?.type ?? CategoryType.general;
 
     showDialog(
       context: context,
@@ -87,14 +98,21 @@ class _CategoryManagementScreenState extends State<CategoryManagementScreen> {
               controller: unitController,
               decoration: const InputDecoration(labelText: 'Unit (optional)'),
             ),
-            DropdownButtonFormField<String>(
+            DropdownButtonFormField<CategoryType>(
               value: selectedType,
               decoration: const InputDecoration(labelText: 'Type'),
               items: const [
-                DropdownMenuItem(value: 'numeric', child: Text('Numeric')),
-                DropdownMenuItem(value: 'text', child: Text('Text')),
+                DropdownMenuItem(
+                    value: CategoryType.general,
+                    child: Text('General (Blood Sugar)')),
+                DropdownMenuItem(
+                    value: CategoryType.meal, child: Text('Meal Category')),
+                DropdownMenuItem(
+                    value: CategoryType.workout,
+                    child: Text('Workout Category')),
               ],
-              onChanged: (value) => selectedType = value ?? 'numeric',
+              onChanged: (value) =>
+                  selectedType = value ?? CategoryType.general,
             ),
           ],
         ),
@@ -171,7 +189,7 @@ class _CategoryManagementScreenState extends State<CategoryManagementScreen> {
                     return ListTile(
                       title: Text(category.name),
                       subtitle: Text(
-                          '${category.type}${category.unit != null ? ' (${category.unit})' : ''}'),
+                          '${_getCategoryTypeLabel(category.type)}${category.unit != null ? ' (${category.unit})' : ''}'),
                       trailing: PopupMenuButton<String>(
                         onSelected: (value) {
                           if (value == 'edit') {

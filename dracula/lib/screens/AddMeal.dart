@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import "../models/meal.dart";
+import "../models/category.dart";
 import "../services/database_helper.dart";
 
 class AddMealScreen extends StatefulWidget {
@@ -27,6 +28,8 @@ class _AddMealScreenState extends State<AddMealScreen> {
   late TextEditingController bloodSugarAfterController;
 
   DateTime selectedDateTime = DateTime.now();
+  int? selectedCategoryId;
+  List<Category> mealCategories = [];
 
   final List<String> premadeMeals = [
     'Breakfast',
@@ -45,7 +48,17 @@ class _AddMealScreenState extends State<AddMealScreen> {
   void initState() {
     super.initState();
     selectedDateTime = widget.record?.dateTime ?? DateTime.now();
+    selectedCategoryId = widget.record?.categoryId;
     nameController = TextEditingController(text: widget.record?.name ?? '');
+    _loadMealCategories();
+  }
+
+  Future<void> _loadMealCategories() async {
+    final allCategories = await DatabaseHelper.instance.readAllCategories();
+    setState(() {
+      mealCategories =
+          allCategories.where((cat) => cat.type == CategoryType.meal).toList();
+    });
     carbsController =
         TextEditingController(text: widget.record?.carbs?.toString() ?? '');
     proteinController =
@@ -135,6 +148,23 @@ class _AddMealScreenState extends State<AddMealScreen> {
               onTap: _selectDateTime,
             ),
             const SizedBox(height: 16),
+            DropdownButtonFormField<int>(
+              decoration:
+                  const InputDecoration(labelText: 'Category (optional)'),
+              value: selectedCategoryId,
+              items: [
+                const DropdownMenuItem<int>(
+                  value: null,
+                  child: Text('No category'),
+                ),
+                ...mealCategories.map((category) => DropdownMenuItem<int>(
+                      value: category.id,
+                      child: Text(category.name),
+                    )),
+              ],
+              onChanged: (value) => setState(() => selectedCategoryId = value),
+            ),
+            const SizedBox(height: 16),
             const Text('Macros',
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
             TextField(
@@ -220,6 +250,7 @@ class _AddMealScreenState extends State<AddMealScreen> {
                   id: widget.record?.id,
                   name: name,
                   dateTime: selectedDateTime,
+                  categoryId: selectedCategoryId,
                   carbs: double.tryParse(carbsController.text),
                   protein: double.tryParse(proteinController.text),
                   fat: double.tryParse(fatController.text),

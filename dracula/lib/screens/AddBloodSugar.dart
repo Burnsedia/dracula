@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import "../models/bloodsugar.dart";
 import "../models/category.dart";
 import "../models/meal.dart";
+import "../models/exercise.dart";
 import "../services/database_helper.dart";
 import "../services/settings_service.dart";
 
@@ -37,6 +38,7 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
     isBeforeMeal = widget.record?.isBeforeMeal ?? true;
     selectedCategoryId = widget.record?.categoryId;
     selectedMealId = widget.record?.mealId;
+    // Note: workoutId not implemented in BloodSugarLog yet
   }
 
   Future<void> _loadSettingsAndCategories() async {

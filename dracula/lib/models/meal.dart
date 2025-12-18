@@ -2,6 +2,7 @@ class Meal {
   final int? id;
   final String name;
   final DateTime dateTime;
+  final int? categoryId; // Link to meal category
   // Macros
   final double? carbs; // grams
   final double? protein; // grams
@@ -22,6 +23,7 @@ class Meal {
     this.id,
     required this.name,
     required this.dateTime,
+    this.categoryId,
     this.carbs,
     this.protein,
     this.fat,
@@ -41,6 +43,7 @@ class Meal {
       id: json['id'],
       name: json['name'],
       dateTime: DateTime.parse(json['dateTime']),
+      categoryId: json['categoryId'],
       carbs: json['carbs'] != null ? json['carbs'] as double : null,
       protein: json['protein'] != null ? json['protein'] as double : null,
       fat: json['fat'] != null ? json['fat'] as double : null,
@@ -65,6 +68,7 @@ class Meal {
       "id": id,
       "name": name,
       "dateTime": dateTime.toIso8601String(),
+      "categoryId": categoryId,
       "carbs": carbs,
       "protein": protein,
       "fat": fat,
@@ -84,6 +88,7 @@ class Meal {
     int? id,
     String? name,
     DateTime? dateTime,
+    int? categoryId,
     double? carbs,
     double? protein,
     double? fat,
@@ -101,6 +106,7 @@ class Meal {
       id: id ?? this.id,
       name: name ?? this.name,
       dateTime: dateTime ?? this.dateTime,
+      categoryId: categoryId ?? this.categoryId,
       carbs: carbs ?? this.carbs,
       protein: protein ?? this.protein,
       fat: fat ?? this.fat,

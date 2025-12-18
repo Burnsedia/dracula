@@ -2,6 +2,7 @@ class ExerciseLog {
   final int? id;
   final String exerciseType;
   final int durationMinutes;
+  final int? categoryId; // Link to workout category
   final double? beforeBloodSugar;
   final double? afterBloodSugar;
   final DateTime createdAt;
@@ -10,6 +11,7 @@ class ExerciseLog {
     this.id,
     required this.exerciseType,
     required this.durationMinutes,
+    this.categoryId,
     this.beforeBloodSugar,
     this.afterBloodSugar,
     required this.createdAt,
@@ -20,6 +22,7 @@ class ExerciseLog {
       id: json['id'],
       exerciseType: json['exerciseType'],
       durationMinutes: json['durationMinutes'],
+      categoryId: json['categoryId'],
       beforeBloodSugar: json['beforeBloodSugar'] != null
           ? json['beforeBloodSugar'] as double
           : null,
@@ -35,6 +38,7 @@ class ExerciseLog {
       "id": id,
       "exerciseType": exerciseType,
       "durationMinutes": durationMinutes,
+      "categoryId": categoryId,
       "beforeBloodSugar": beforeBloodSugar,
       "afterBloodSugar": afterBloodSugar,
       "createdAt": createdAt.toIso8601String(),
@@ -45,6 +49,7 @@ class ExerciseLog {
     int? id,
     String? exerciseType,
     int? durationMinutes,
+    int? categoryId,
     double? beforeBloodSugar,
     double? afterBloodSugar,
     DateTime? createdAt,
@@ -53,6 +58,7 @@ class ExerciseLog {
       id: id ?? this.id,
       exerciseType: exerciseType ?? this.exerciseType,
       durationMinutes: durationMinutes ?? this.durationMinutes,
+      categoryId: categoryId ?? this.categoryId,
       beforeBloodSugar: beforeBloodSugar ?? this.beforeBloodSugar,
       afterBloodSugar: afterBloodSugar ?? this.afterBloodSugar,
       createdAt: createdAt ?? this.createdAt,
