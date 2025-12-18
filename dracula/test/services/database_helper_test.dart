@@ -3,6 +3,8 @@ import 'package:sqflite/sqflite.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:dracula/models/bloodsugar.dart';
 import 'package:dracula/models/meal.dart';
+import 'package:dracula/models/category.dart';
+import 'package:dracula/models/exercise.dart';
 import 'package:dracula/services/database_helper.dart';
 
 void main() {
@@ -206,6 +208,79 @@ void main() {
         expect(rowsAffected, 1);
 
         expect(() => dbHelper.readMeal(created.id!), throwsException);
+      });
+
+      test('createMeal with categoryId links meal to category', () async {
+        // Create a meal category first
+        final category = Category(name: 'Breakfast', type: CategoryType.meal);
+        final createdCategory = await dbHelper.createCategory(category);
+
+        // Create meal with category
+        final meal = Meal(
+          name: 'Oatmeal',
+          dateTime: DateTime.now(),
+          categoryId: createdCategory.id,
+          carbs: 30.0,
+          calories: 150.0,
+        );
+
+        final createdMeal = await dbHelper.createMeal(meal);
+
+        expect(createdMeal.categoryId, createdCategory.id);
+        expect(createdMeal.name, 'Oatmeal');
+        expect(createdMeal.carbs, 30.0);
+      });
+
+      test('createExercise with categoryId links exercise to category',
+          () async {
+        // Create a workout category first
+        final category = Category(name: 'Cardio', type: CategoryType.workout);
+        final createdCategory = await dbHelper.createCategory(category);
+
+        // Create exercise with category
+        final exercise = ExerciseLog(
+          exerciseType: 'Running',
+          durationMinutes: 30,
+          categoryId: createdCategory.id,
+          createdAt: DateTime.now(),
+        );
+
+        final createdExercise = await dbHelper.createExercise(exercise);
+
+        expect(createdExercise.categoryId, createdCategory.id);
+        expect(createdExercise.exerciseType, 'Running');
+        expect(createdExercise.durationMinutes, 30);
+      });
+    });
+
+    group('Category type operations', () {
+      test('readAllCategories returns categories of specific types', () async {
+        // Create categories of different types
+        final generalCat =
+            Category(name: 'Fasting', type: CategoryType.general);
+        final mealCat = Category(name: 'Breakfast', type: CategoryType.meal);
+        final workoutCat = Category(name: 'Cardio', type: CategoryType.workout);
+
+        await dbHelper.createCategory(generalCat);
+        await dbHelper.createCategory(mealCat);
+        await dbHelper.createCategory(workoutCat);
+
+        final allCategories = await dbHelper.readAllCategories();
+
+        expect(allCategories.length, 3);
+        expect(
+            allCategories
+                .where((cat) => cat.type == CategoryType.general)
+                .length,
+            1);
+        expect(
+            allCategories.where((cat) => cat.type == CategoryType.meal).length,
+            1);
+        expect(
+            allCategories
+                .where((cat) => cat.type == CategoryType.workout)
+                .length,
+            1);
       });
     });
   });
