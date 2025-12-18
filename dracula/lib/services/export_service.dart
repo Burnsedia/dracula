@@ -104,6 +104,37 @@ class ExportService {
     );
   }
 
+  static Future<String?> pickDatabaseFile() async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ['db'],
+    );
+
+    if (result != null) {
+      return result.files.single.path;
+    }
+    return null;
+  }
+
+  static Future<bool> restoreDatabase(String backupPath) async {
+    try {
+      final currentDbPath =
+          await DatabaseHelper.instance.database.then((db) => db.path);
+      final backupFile = File(backupPath);
+      final currentDbFile = File(currentDbPath);
+
+      // Close current database
+      await DatabaseHelper.instance.close();
+
+      // Copy backup over current database
+      await backupFile.copy(currentDbFile.path);
+
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
   static Future<String?> pickCsvFile() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
