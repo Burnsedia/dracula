@@ -3,6 +3,7 @@ class BloodSugarLog {
   final double bloodSugar;
   final bool isBeforeMeal;
   final int? categoryId;
+  final int? mealId;
   final DateTime createdAt;
 
   BloodSugarLog(
@@ -10,6 +11,7 @@ class BloodSugarLog {
       required this.bloodSugar,
       required this.isBeforeMeal,
       this.categoryId,
+      this.mealId,
       required this.createdAt});
 
   factory BloodSugarLog.fromJson(Map<String, dynamic> json) {
@@ -18,6 +20,7 @@ class BloodSugarLog {
       bloodSugar: json['bloodSugar'],
       isBeforeMeal: json['isBeforeMeal'] == 1,
       categoryId: json['categoryId'],
+      mealId: json['mealId'],
       createdAt: DateTime.parse(json['createdAt']),
     );
   }
@@ -28,6 +31,7 @@ class BloodSugarLog {
       "bloodSugar": bloodSugar,
       "isBeforeMeal": isBeforeMeal ? 1 : 0,
       "categoryId": categoryId,
+      "mealId": mealId,
       "createdAt": createdAt.toIso8601String(),
     };
   }
@@ -37,6 +41,7 @@ class BloodSugarLog {
     double? bloodSugar,
     bool? isBeforeMeal,
     int? categoryId,
+    int? mealId,
     DateTime? createdAt,
   }) {
     return BloodSugarLog(
@@ -44,6 +49,7 @@ class BloodSugarLog {
       bloodSugar: bloodSugar ?? this.bloodSugar,
       isBeforeMeal: isBeforeMeal ?? this.isBeforeMeal,
       categoryId: categoryId ?? this.categoryId,
+      mealId: mealId ?? this.mealId,
       createdAt: createdAt ?? this.createdAt,
     );
   }

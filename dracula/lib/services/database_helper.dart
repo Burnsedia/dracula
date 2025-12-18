@@ -22,7 +22,7 @@ class DatabaseHelper {
     final path = join(dbPath, 'dracula_v4.db');
 
     return await openDatabase(path,
-        version: 4, onCreate: _createDB, onUpgrade: _upgradeDB);
+        version: 5, onCreate: _createDB, onUpgrade: _upgradeDB);
   }
 
   Future _createDB(Database db, int version) async {
@@ -115,8 +115,13 @@ CREATE TABLE meals (
   iron $nullableDoubleType,
   bloodSugarBefore $nullableDoubleType,
   bloodSugarAfter $nullableDoubleType
-  )
+   )
 ''');
+    }
+    if (oldVersion < 5) {
+      // Add mealId column to blood_sugar_logs
+      await db
+          .execute('ALTER TABLE blood_sugar_logs ADD COLUMN mealId INTEGER');
     }
   }
 

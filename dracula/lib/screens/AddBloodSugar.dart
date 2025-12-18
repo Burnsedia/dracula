@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import "../models/bloodsugar.dart";
 import "../models/category.dart";
+import "../models/meal.dart";
 import "../services/database_helper.dart";
 import "../services/settings_service.dart";
 
@@ -17,7 +18,9 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
   late TextEditingController bloodSugarController;
   late bool isBeforeMeal;
   int? selectedCategoryId;
+  int? selectedMealId;
   List<Category> categories = [];
+  List<Meal> meals = [];
   BloodSugarUnit _displayUnit = BloodSugarUnit.mgdl;
 
   @override
@@ -33,14 +36,17 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
     );
     isBeforeMeal = widget.record?.isBeforeMeal ?? true;
     selectedCategoryId = widget.record?.categoryId;
+    selectedMealId = widget.record?.mealId;
   }
 
   Future<void> _loadSettingsAndCategories() async {
     final unit = await SettingsService().getBloodSugarUnit();
     final cats = await DatabaseHelper.instance.readAllCategories();
+    final mealsList = await DatabaseHelper.instance.readAllMeals();
     setState(() {
       _displayUnit = unit;
       categories = cats;
+      meals = mealsList;
     });
 
     if (widget.record != null) {
@@ -108,6 +114,24 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
                 onChanged: (value) =>
                     setState(() => selectedCategoryId = value),
               ),
+            if (isBeforeMeal) ...[
+              const SizedBox(height: 16),
+              DropdownButtonFormField<int>(
+                decoration: const InputDecoration(labelText: 'Meal (optional)'),
+                value: selectedMealId,
+                items: [
+                  const DropdownMenuItem<int>(
+                    value: null,
+                    child: Text('No meal selected'),
+                  ),
+                  ...meals.map((meal) => DropdownMenuItem<int>(
+                        value: meal.id,
+                        child: Text(meal.name),
+                      )),
+                ],
+                onChanged: (value) => setState(() => selectedMealId = value),
+              ),
+            ],
             FilledButton(
               onPressed: () async {
                 final bloodSugar =
@@ -123,6 +147,7 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
                         bloodSugar: storageValue,
                         isBeforeMeal: isBeforeMeal,
                         categoryId: selectedCategoryId,
+                        mealId: selectedMealId,
                       );
 
                       await DatabaseHelper.instance.update(updatedRecord);
@@ -134,6 +159,7 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
                         bloodSugar: storageValue,
                         isBeforeMeal: isBeforeMeal,
                         categoryId: selectedCategoryId,
+                        mealId: selectedMealId,
                         createdAt: DateTime.now(),
                       );
 
