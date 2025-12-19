@@ -13,7 +13,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.24.0'  # Match pubspec.yaml
+          flutter-version: '3.38.3'
       - run: flutter pub get
       - run: flutter test
       - run: flutter analyze
