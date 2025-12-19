@@ -24,6 +24,7 @@ jobs:
       - run: flutter analyze
 
   build-android:
+    needs: test
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -41,6 +42,7 @@ jobs:
           path: build/app/outputs/apk/debug/app-debug.apk
 
   build-ios:
+    needs: test
     runs-on: macos-latest
     permissions:
       contents: read
