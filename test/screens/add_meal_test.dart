@@ -25,6 +25,9 @@ void main() {
 
   group('AddMealScreen', () {
     testWidgets('should display all form fields', (WidgetTester tester) async {
+      tester.binding.window.physicalSizeTestValue = Size(800, 1200);
+      tester.binding.window.devicePixelRatioTestValue = 1.0;
+      addTearDown(tester.binding.window.clearPhysicalSizeTestValue);
       await tester.pumpWidget(MaterialApp(home: AddMealScreen()));
       await tester.pumpAndSettle();
 
@@ -53,8 +56,10 @@ void main() {
       await tester.pumpWidget(MaterialApp(home: AddMealScreen()));
       await tester.pumpAndSettle();
 
-      expect(find.text('Premade Exercises'),
-          findsNothing); // Should be 'Premade Meals'
+      expect(
+        find.text('Premade Exercises'),
+        findsNothing,
+      ); // Should be 'Premade Meals'
       expect(find.text('Premade Meals'), findsOneWidget);
       expect(find.text('Breakfast'), findsOneWidget);
       expect(find.text('Lunch'), findsOneWidget);
@@ -67,8 +72,9 @@ void main() {
       expect(find.text('Salad'), findsOneWidget);
     });
 
-    testWidgets('should populate meal name when premade meal is tapped',
-        (WidgetTester tester) async {
+    testWidgets('should populate meal name when premade meal is tapped', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(MaterialApp(home: AddMealScreen()));
       await tester.pumpAndSettle();
 
@@ -82,8 +88,9 @@ void main() {
       expect(textFieldWidget.controller?.text, 'Breakfast');
     });
 
-    testWidgets('should show error when saving without name',
-        (WidgetTester tester) async {
+    testWidgets('should show error when saving without name', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(MaterialApp(home: AddMealScreen()));
       await tester.pumpAndSettle();
 
@@ -94,8 +101,9 @@ void main() {
       expect(find.text('Please enter a meal name'), findsOneWidget);
     });
 
-    testWidgets('should save meal with valid data',
-        (WidgetTester tester) async {
+    testWidgets('should save meal with valid data', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(MaterialApp(home: AddMealScreen()));
       await tester.pumpAndSettle();
 
@@ -119,8 +127,9 @@ void main() {
       // In a real scenario, we'd check the database or mock the navigator
     });
 
-    testWidgets('should populate fields when editing existing meal',
-        (WidgetTester tester) async {
+    testWidgets('should populate fields when editing existing meal', (
+      WidgetTester tester,
+    ) async {
       final existingMeal = Meal(
         id: 1,
         name: 'Existing Meal',
@@ -132,8 +141,9 @@ void main() {
         bloodSugarAfter: 120.0,
       );
 
-      await tester
-          .pumpWidget(MaterialApp(home: AddMealScreen(record: existingMeal)));
+      await tester.pumpWidget(
+        MaterialApp(home: AddMealScreen(record: existingMeal)),
+      );
       await tester.pumpAndSettle();
 
       expect(find.text('Edit Meal'), findsOneWidget);

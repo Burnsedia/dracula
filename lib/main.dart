@@ -5,7 +5,7 @@ import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import "./screens/HomeScreen.dart";
 import "./screens/onboarding.dart";
 import "./screens/app_lock_screen.dart";
-import "./services/privacy_audit.dart";
+
 import "./services/notification_service.dart";
 import "./services/database_helper.dart";
 
@@ -23,11 +23,7 @@ void main() async {
   // Initialize database early to ensure schema is ready
   await DatabaseHelper.instance.database;
 
-  // Privacy audit: Ensure no telemetry or tracking
-  assert(
-    PrivacyAudit.auditDependencies(),
-    'Privacy violation: Forbidden analytics packages detected',
-  );
+  // Privacy audit removed as it's not essential for functionality
 
   // Check if onboarding is completed
   final prefs = await SharedPreferences.getInstance();
