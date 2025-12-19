@@ -14,9 +14,9 @@ jobs:
         working-directory: dracula
     steps:
       - uses: actions/checkout@v4
-      - uses: subosito/flutter-action@v2
+      - uses: subosito/flutter-action@v3
         with:
-          flutter-version: 'stable'
+          flutter-version: '3.24.0'
       - run: flutter --version
       - run: flutter pub get
       - run: ls -la
@@ -30,9 +30,9 @@ jobs:
         working-directory: dracula
     steps:
       - uses: actions/checkout@v4
-      - uses: subosito/flutter-action@v2
+      - uses: subosito/flutter-action@v3
         with:
-          flutter-version: 'stable'
+          flutter-version: '3.24.0'
       - run: flutter pub get
       - run: flutter build apk --debug
       - uses: actions/upload-artifact@v4
@@ -47,9 +47,9 @@ jobs:
         working-directory: dracula
     steps:
       - uses: actions/checkout@v4
-      - uses: subosito/flutter-action@v2
+      - uses: subosito/flutter-action@v3
         with:
-          flutter-version: 'stable'
+          flutter-version: '3.24.0'
       - run: flutter pub get
       - run: flutter build ios --simulator --no-codesign
       - uses: actions/upload-artifact@v4
