@@ -1,0 +1,120 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+jobs:
+  build-android:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.24.0'
+      - run: flutter pub get
+      - name: Create keystore
+        run: |
+          echo "${{ secrets.ANDROID_KEYSTORE }}" | base64 -d > android/app/keystore.jks
+      - run: flutter build appbundle --release
+        env:
+          ANDROID_KEYSTORE_PATH: android/app/keystore.jks
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+      - run: flutter build apk --release --split-per-abi
+      - uses: actions/upload-artifact@v4
+        with:
+          name: android-release-aab
+          path: build/app/outputs/bundle/release/app-release.aab
+      - uses: actions/upload-artifact@v4
+        with:
+          name: android-release-apk
+          path: build/app/outputs/apk/release/app-*-release.apk
+
+  deploy-google-play:
+    needs: build-android
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.0'
+      - run: gem install fastlane
+      - run: echo "${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT_JSON }}" > fastlane/google-play.json
+      - uses: actions/download-artifact@v4
+        with:
+          name: android-release-aab
+      - run: fastlane android deploy
+        working-directory: fastlane
+
+  build-f-droid:
+    needs: build-android
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: android-release-apk
+      # APK is ready for manual F-Droid submission
+
+  build-ios:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.24.0'
+      - run: flutter pub get
+      - run: flutter build ipa --release --export-options-plist=ios/exportOptions.plist
+        env:
+          IOS_CERTIFICATE: ${{ secrets.IOS_CERTIFICATE }}
+          IOS_CERTIFICATE_PASSWORD: ${{ secrets.IOS_CERTIFICATE_PASSWORD }}
+          IOS_PROVISIONING_PROFILE: ${{ secrets.IOS_PROVISIONING_PROFILE }}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ios-release-ipa
+          path: build/ios/ipa/*.ipa
+
+  deploy-ios:
+    needs: build-ios
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.0'
+      - run: gem install fastlane
+      - run: |
+          echo "${{ secrets.APP_STORE_CONNECT_PRIVATE_KEY }}" > fastlane/AuthKey.p8
+          echo "APP_STORE_CONNECT_PRIVATE_KEY_ID=${{ secrets.APP_STORE_CONNECT_KEY_ID }}" >> $GITHUB_ENV
+          echo "APP_STORE_CONNECT_ISSUER_ID=${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}" >> $GITHUB_ENV
+      - uses: actions/download-artifact@v4
+        with:
+          name: ios-release-ipa
+      - run: fastlane ios deploy
+        working-directory: fastlane
+
+  github-release:
+    needs: [build-android, build-ios]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: android-release-apk
+      - uses: actions/download-artifact@v4
+        with:
+          name: android-release-aab
+      - uses: actions/download-artifact@v4
+        with:
+          name: ios-release-ipa
+      - uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            app-*-release.apk
+            app-release.aab
+            *.ipa
+          generate_release_notes: true
+          prerelease: ${{ contains(github.ref, '-beta') }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

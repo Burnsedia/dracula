@@ -1,0 +1,3 @@
+app_identifier "com.example.dracula"
+apple_id ENV["APPLE_ID"]  # If needed
+team_id ENV["TEAM_ID"]  # If needed
