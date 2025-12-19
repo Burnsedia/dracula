@@ -8,11 +8,14 @@ on:
 jobs:
   build-android:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
-      - uses: subosito/flutter-action@v2.10.0
+      - uses: subosito/flutter-action@v2.11.0
         with:
-          flutter-version: '3.22.0'
+          flutter-version: '3.19.0'
       - run: flutter pub get
       - name: Create keystore
         run: |
@@ -36,6 +39,9 @@ jobs:
   deploy-google-play:
     needs: build-android
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
       - uses: ruby/setup-ruby@v1
@@ -52,6 +58,9 @@ jobs:
   build-f-droid:
     needs: build-android
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    timeout-minutes: 10
     steps:
       - uses: actions/download-artifact@v4
         with:
@@ -60,11 +69,14 @@ jobs:
 
   build-ios:
     runs-on: macos-latest
+    permissions:
+      contents: read
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
-      - uses: subosito/flutter-action@v2.10.0
+      - uses: subosito/flutter-action@v2.11.0
         with:
-          flutter-version: '3.22.0'
+          flutter-version: '3.19.0'
       - run: flutter pub get
       - run: flutter build ipa --release --export-options-plist=ios/exportOptions.plist
         env:
@@ -79,6 +91,9 @@ jobs:
   deploy-ios:
     needs: build-ios
     runs-on: macos-latest
+    permissions:
+      contents: read
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
       - uses: ruby/setup-ruby@v1
@@ -98,6 +113,9 @@ jobs:
   github-release:
     needs: [build-android, build-ios]
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    timeout-minutes: 10
     steps:
       - uses: actions/download-artifact@v4
         with:
