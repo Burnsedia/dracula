@@ -42,6 +42,7 @@ CREATE TABLE blood_sugar_logs (
   bloodSugar $doubleType,
   isBeforeMeal $intType,
   categoryId INTEGER,
+  mealId INTEGER,
   createdAt $textType
   )
 ''');

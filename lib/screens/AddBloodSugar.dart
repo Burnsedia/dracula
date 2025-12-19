@@ -143,7 +143,7 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
                 onChanged: (value) => setState(() => selectedMealId = value),
               ),
             ],
-            FilledButton(
+            ElevatedButton(
               onPressed: () async {
                 final bloodSugar =
                     double.tryParse(bloodSugarController.text) ?? 0.0;
@@ -188,12 +188,9 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
                     debugPrint('Failed to save blood sugar record: $e');
                     if (mounted) {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text('Failed to save record: $e'),
-                        ),
+                        SnackBar(content: Text('Failed to save record: $e')),
                       );
                     }
-                  }
                   }
                 } else {
                   if (mounted) {
