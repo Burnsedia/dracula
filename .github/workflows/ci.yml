@@ -76,3 +76,39 @@ jobs:
         with:
           name: linux-build
           path: build/linux/x64/release/bundle/
+
+  build-macos:
+    needs: test
+    runs-on: macos-latest
+    permissions:
+      contents: read
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2.11.0
+        with:
+          channel: 'stable'
+      - run: flutter pub get
+      - run: flutter build macos
+      - uses: actions/upload-artifact@v4
+        with:
+          name: macos-build
+          path: build/macos/Build/Products/Release/Dracula.app
+
+  build-windows:
+    needs: test
+    runs-on: windows-latest
+    permissions:
+      contents: read
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2.11.0
+        with:
+          channel: 'stable'
+      - run: flutter pub get
+      - run: flutter build windows
+      - uses: actions/upload-artifact@v4
+        with:
+          name: windows-build
+          path: build/windows/x64/runner/Release/
