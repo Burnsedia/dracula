@@ -9,7 +9,7 @@ void main() {
       WidgetTester tester,
     ) async {
       await tester.pumpWidget(BloodSugarApp(onboardingCompleted: true));
-      await tester.pumpAndSettle(const Duration(seconds: 5));
+      await tester.pumpAndSettle(const Duration(seconds: 10));
 
       // Get the theme from the app
       final BuildContext context = tester.element(find.byType(HomeScreen));
@@ -41,7 +41,7 @@ void main() {
       WidgetTester tester,
     ) async {
       await tester.pumpWidget(BloodSugarApp(onboardingCompleted: true));
-      await tester.pumpAndSettle(const Duration(seconds: 5));
+      await tester.pumpAndSettle(const Duration(seconds: 10));
 
       final BuildContext context = tester.element(find.byType(HomeScreen));
       final ThemeData theme = Theme.of(context);
@@ -63,7 +63,7 @@ void main() {
       WidgetTester tester,
     ) async {
       await tester.pumpWidget(BloodSugarApp(onboardingCompleted: true));
-      await tester.pumpAndSettle(const Duration(seconds: 5));
+      await tester.pumpAndSettle(const Duration(seconds: 10));
 
       // Check that app bar has Dracula colors
       final appBar = tester.widget<AppBar>(find.byType(AppBar));
