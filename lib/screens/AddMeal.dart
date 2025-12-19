@@ -50,15 +50,6 @@ class _AddMealScreenState extends State<AddMealScreen> {
     selectedDateTime = widget.record?.dateTime ?? DateTime.now();
     selectedCategoryId = widget.record?.categoryId;
     nameController = TextEditingController(text: widget.record?.name ?? '');
-    _loadMealCategories();
-  }
-
-  Future<void> _loadMealCategories() async {
-    final allCategories = await DatabaseHelper.instance.readAllCategories();
-    setState(() {
-      mealCategories =
-          allCategories.where((cat) => cat.type == CategoryType.meal).toList();
-    });
     carbsController =
         TextEditingController(text: widget.record?.carbs?.toString() ?? '');
     proteinController =
@@ -83,6 +74,15 @@ class _AddMealScreenState extends State<AddMealScreen> {
         text: widget.record?.bloodSugarBefore?.toString() ?? '');
     bloodSugarAfterController = TextEditingController(
         text: widget.record?.bloodSugarAfter?.toString() ?? '');
+    _loadMealCategories();
+  }
+
+  Future<void> _loadMealCategories() async {
+    final allCategories = await DatabaseHelper.instance.readAllCategories();
+    setState(() {
+      mealCategories =
+          allCategories.where((cat) => cat.type == CategoryType.meal).toList();
+    });
   }
 
   Future<void> _selectDateTime() async {
