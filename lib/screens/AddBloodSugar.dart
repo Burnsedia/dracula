@@ -150,7 +150,7 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
 
                 if (bloodSugar > 0.0) {
                   debugPrint(
-                    'Attempting to save blood sugar record with value: $bloodSugar',
+                    'Attempting to save blood sugar record with value: $bloodSugar, category: $selectedCategoryId, meal: $selectedMealId',
                   );
                   try {
                     final storageValue = SettingsService()
@@ -165,6 +165,7 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
                       );
 
                       await DatabaseHelper.instance.update(updatedRecord);
+                      debugPrint('Blood sugar record updated successfully');
                       if (mounted) {
                         Navigator.pop(context, updatedRecord);
                       }
@@ -179,6 +180,9 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
 
                       final savedRecord = await DatabaseHelper.instance.create(
                         newRecord,
+                      );
+                      debugPrint(
+                        'New blood sugar record created successfully with id: ${savedRecord.id}',
                       );
                       if (mounted) {
                         Navigator.pop(context, savedRecord);
