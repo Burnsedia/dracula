@@ -202,3 +202,5 @@ This project is licensed under the GNU Affero General Public License v3.0 - see 
 **Disclaimer**: Dracula is a personal health tracking tool and not medical advice. Please consult healthcare professionals for diabetes management and nutrition guidance.
 
 Made with ❤️ using Flutter
+
+<!-- Test commit for CI trigger -->
