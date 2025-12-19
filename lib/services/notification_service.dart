@@ -17,14 +17,18 @@ class NotificationService {
 
     const DarwinInitializationSettings iosSettings =
         DarwinInitializationSettings(
-      requestAlertPermission: true,
-      requestBadgePermission: true,
-      requestSoundPermission: true,
-    );
+          requestAlertPermission: true,
+          requestBadgePermission: true,
+          requestSoundPermission: true,
+        );
+
+    const LinuxInitializationSettings linuxSettings =
+        LinuxInitializationSettings(defaultActionName: 'Open notification');
 
     const InitializationSettings settings = InitializationSettings(
       android: androidSettings,
       iOS: iosSettings,
+      linux: linuxSettings,
     );
 
     await _flutterLocalNotificationsPlugin.initialize(
@@ -37,17 +41,15 @@ class NotificationService {
     // Request permissions
     await _flutterLocalNotificationsPlugin
         .resolvePlatformSpecificImplementation<
-            AndroidFlutterLocalNotificationsPlugin>()
+          AndroidFlutterLocalNotificationsPlugin
+        >()
         ?.requestNotificationsPermission();
 
     await _flutterLocalNotificationsPlugin
         .resolvePlatformSpecificImplementation<
-            IOSFlutterLocalNotificationsPlugin>()
-        ?.requestPermissions(
-          alert: true,
-          badge: true,
-          sound: true,
-        );
+          IOSFlutterLocalNotificationsPlugin
+        >()
+        ?.requestPermissions(alert: true, badge: true, sound: true);
   }
 
   Future<void> scheduleDailyReminder(TimeOfDay time) async {
@@ -78,10 +80,7 @@ class NotificationService {
           importance: Importance.high,
           priority: Priority.high,
         ),
-        iOS: DarwinNotificationDetails(
-          sound: 'default',
-          badgeNumber: 1,
-        ),
+        iOS: DarwinNotificationDetails(sound: 'default', badgeNumber: 1),
       ),
       androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
     );
@@ -102,10 +101,7 @@ class NotificationService {
     final timeString = prefs.getString('reminder_time');
     if (timeString != null) {
       final parts = timeString.split(':');
-      return TimeOfDay(
-        hour: int.parse(parts[0]),
-        minute: int.parse(parts[1]),
-      );
+      return TimeOfDay(hour: int.parse(parts[0]), minute: int.parse(parts[1]));
     }
     return null;
   }
@@ -128,9 +124,7 @@ class NotificationService {
               importance: Importance.defaultImportance,
               priority: Priority.defaultPriority,
             ),
-            iOS: DarwinNotificationDetails(
-              sound: 'default',
-            ),
+            iOS: DarwinNotificationDetails(sound: 'default'),
           ),
         );
       }

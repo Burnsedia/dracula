@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:io' show Platform;
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import "./screens/HomeScreen.dart";
 import "./screens/onboarding.dart";
 import "./screens/app_lock_screen.dart";
@@ -10,14 +12,22 @@ import "./services/database_helper.dart";
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  // Initialize sqflite for Linux
+  if (Platform.isLinux) {
+    sqfliteFfiInit();
+    databaseFactory = databaseFactoryFfi;
+  }
+
   // Initialize services
   await NotificationService().init();
   // Initialize database early to ensure schema is ready
   await DatabaseHelper.instance.database;
 
   // Privacy audit: Ensure no telemetry or tracking
-  assert(PrivacyAudit.auditDependencies(),
-      'Privacy violation: Forbidden analytics packages detected');
+  assert(
+    PrivacyAudit.auditDependencies(),
+    'Privacy violation: Forbidden analytics packages detected',
+  );
 
   // Check if onboarding is completed
   final prefs = await SharedPreferences.getInstance();
@@ -129,9 +139,7 @@ class BloodSugarApp extends StatelessWidget {
       ),
 
       textButtonTheme: TextButtonThemeData(
-        style: TextButton.styleFrom(
-          foregroundColor: draculaCyan,
-        ),
+        style: TextButton.styleFrom(foregroundColor: draculaCyan),
       ),
 
       // Floating action button
@@ -177,9 +185,7 @@ class BloodSugarApp extends StatelessWidget {
       ),
 
       // Progress indicator
-      progressIndicatorTheme: ProgressIndicatorThemeData(
-        color: draculaCyan,
-      ),
+      progressIndicatorTheme: ProgressIndicatorThemeData(color: draculaCyan),
 
       // Divider
       dividerColor: draculaComment.withOpacity(0.3),
