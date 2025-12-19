@@ -21,8 +21,12 @@ class DatabaseHelper {
     final dbPath = await getDatabasesPath();
     final path = join(dbPath, 'dracula_v4.db');
 
-    return await openDatabase(path,
-        version: 6, onCreate: _createDB, onUpgrade: _upgradeDB);
+    return await openDatabase(
+      path,
+      version: 6,
+      onCreate: _createDB,
+      onUpgrade: _upgradeDB,
+    );
   }
 
   Future _createDB(Database db, int version) async {
@@ -93,7 +97,8 @@ CREATE TABLE meals (
     if (oldVersion < 3) {
       // Add categoryId column to blood_sugar_logs
       await db.execute(
-          'ALTER TABLE blood_sugar_logs ADD COLUMN categoryId INTEGER');
+        'ALTER TABLE blood_sugar_logs ADD COLUMN categoryId INTEGER',
+      );
     }
     if (oldVersion < 4) {
       // Create meals table
@@ -122,21 +127,28 @@ CREATE TABLE meals (
     }
     if (oldVersion < 5) {
       // Add mealId column to blood_sugar_logs
-      await db
-          .execute('ALTER TABLE blood_sugar_logs ADD COLUMN mealId INTEGER');
+      await db.execute(
+        'ALTER TABLE blood_sugar_logs ADD COLUMN mealId INTEGER',
+      );
     }
     if (oldVersion < 6) {
       // Add categoryId to meals and exercise_logs tables
       await db.execute('ALTER TABLE meals ADD COLUMN categoryId INTEGER');
-      await db
-          .execute('ALTER TABLE exercise_logs ADD COLUMN categoryId INTEGER');
+      await db.execute(
+        'ALTER TABLE exercise_logs ADD COLUMN categoryId INTEGER',
+      );
     }
   }
 
   Future<BloodSugarLog> create(BloodSugarLog log) async {
     final db = await instance.database;
-    final id = await db.insert('blood_sugar_logs', log.toJson());
-    return log.copyWith(id: id);
+    try {
+      final id = await db.insert('blood_sugar_logs', log.toJson());
+      return log.copyWith(id: id);
+    } catch (e) {
+      print('Database error in create BloodSugarLog: $e');
+      rethrow;
+    }
   }
 
   Future<BloodSugarLog> read(int id) async {
@@ -203,7 +215,7 @@ CREATE TABLE meals (
         'durationMinutes',
         'beforeBloodSugar',
         'afterBloodSugar',
-        'createdAt'
+        'createdAt',
       ],
       where: 'id = ?',
       whereArgs: [id],
@@ -235,11 +247,7 @@ CREATE TABLE meals (
 
   Future<int> deleteExercise(int id) async {
     final db = await instance.database;
-    return await db.delete(
-      'exercise_logs',
-      where: 'id = ?',
-      whereArgs: [id],
-    );
+    return await db.delete('exercise_logs', where: 'id = ?', whereArgs: [id]);
   }
 
   // Category methods
@@ -284,11 +292,7 @@ CREATE TABLE meals (
 
   Future<int> deleteCategory(int id) async {
     final db = await instance.database;
-    return await db.delete(
-      'categories',
-      where: 'id = ?',
-      whereArgs: [id],
-    );
+    return await db.delete('categories', where: 'id = ?', whereArgs: [id]);
   }
 
   // Meal CRUD operations
@@ -300,11 +304,7 @@ CREATE TABLE meals (
 
   Future<Meal> readMeal(int id) async {
     final db = await instance.database;
-    final maps = await db.query(
-      'meals',
-      where: 'id = ?',
-      whereArgs: [id],
-    );
+    final maps = await db.query('meals', where: 'id = ?', whereArgs: [id]);
 
     if (maps.isNotEmpty) {
       return Meal.fromJson(maps.first);
@@ -332,10 +332,6 @@ CREATE TABLE meals (
 
   Future<int> deleteMeal(int id) async {
     final db = await instance.database;
-    return await db.delete(
-      'meals',
-      where: 'id = ?',
-      whereArgs: [id],
-    );
+    return await db.delete('meals', where: 'id = ?', whereArgs: [id]);
   }
 }

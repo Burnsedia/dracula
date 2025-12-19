@@ -31,8 +31,8 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
     bloodSugarController = TextEditingController(
       text: widget.record != null
           ? SettingsService()
-              .convertToDisplayUnit(widget.record!.bloodSugar, _displayUnit)
-              .toString()
+                .convertToDisplayUnit(widget.record!.bloodSugar, _displayUnit)
+                .toString()
           : '',
     );
     isBeforeMeal = widget.record?.isBeforeMeal ?? true;
@@ -52,8 +52,10 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
     });
 
     if (widget.record != null) {
-      final displayValue = SettingsService()
-          .convertToDisplayUnit(widget.record!.bloodSugar, unit);
+      final displayValue = SettingsService().convertToDisplayUnit(
+        widget.record!.bloodSugar,
+        unit,
+      );
       bloodSugarController.text = displayValue.toString();
     }
   }
@@ -62,9 +64,11 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.record != null
-            ? 'Edit Blood Sugar Record'
-            : 'Add Blood Sugar Record'),
+        title: Text(
+          widget.record != null
+              ? 'Edit Blood Sugar Record'
+              : 'Add Blood Sugar Record',
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -100,18 +104,21 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
             ),
             if (categories.isNotEmpty)
               DropdownButtonFormField<int>(
-                decoration:
-                    const InputDecoration(labelText: 'Category (optional)'),
+                decoration: const InputDecoration(
+                  labelText: 'Category (optional)',
+                ),
                 value: selectedCategoryId,
                 items: [
                   const DropdownMenuItem<int>(
                     value: null,
                     child: Text('No category'),
                   ),
-                  ...categories.map((category) => DropdownMenuItem<int>(
-                        value: category.id,
-                        child: Text(category.name),
-                      )),
+                  ...categories.map(
+                    (category) => DropdownMenuItem<int>(
+                      value: category.id,
+                      child: Text(category.name),
+                    ),
+                  ),
                 ],
                 onChanged: (value) =>
                     setState(() => selectedCategoryId = value),
@@ -126,10 +133,12 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
                     value: null,
                     child: Text('No meal selected'),
                   ),
-                  ...meals.map((meal) => DropdownMenuItem<int>(
-                        value: meal.id,
-                        child: Text(meal.name),
-                      )),
+                  ...meals.map(
+                    (meal) => DropdownMenuItem<int>(
+                      value: meal.id,
+                      child: Text(meal.name),
+                    ),
+                  ),
                 ],
                 onChanged: (value) => setState(() => selectedMealId = value),
               ),
@@ -140,6 +149,9 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
                     double.tryParse(bloodSugarController.text) ?? 0.0;
 
                 if (bloodSugar > 0.0) {
+                  debugPrint(
+                    'Attempting to save blood sugar record with value: $bloodSugar',
+                  );
                   try {
                     final storageValue = SettingsService()
                         .convertFromDisplayUnit(bloodSugar, _displayUnit);
@@ -165,13 +177,15 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
                         createdAt: DateTime.now(),
                       );
 
-                      final savedRecord =
-                          await DatabaseHelper.instance.create(newRecord);
+                      final savedRecord = await DatabaseHelper.instance.create(
+                        newRecord,
+                      );
                       if (mounted) {
                         Navigator.pop(context, savedRecord);
                       }
                     }
                   } catch (e) {
+                    debugPrint('Failed to save blood sugar record: $e');
                     if (mounted) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
@@ -180,12 +194,14 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
                       );
                     }
                   }
+                  }
                 } else {
                   if (mounted) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
-                        content:
-                            Text('Please enter a valid blood sugar value.'),
+                        content: Text(
+                          'Please enter a valid blood sugar value.',
+                        ),
                       ),
                     );
                   }
