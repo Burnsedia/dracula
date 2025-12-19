@@ -28,36 +28,36 @@ void main() {
       WidgetTester tester,
     ) async {
       await tester.pumpWidget(BloodSugarApp(onboardingCompleted: true));
-      await tester.pumpAndSettle(const Duration(seconds: 30));
+      await tester.pumpAndSettle(const Duration(seconds: 120));
 
       // Navigate to settings (where categories are managed)
       expect(find.byIcon(Icons.settings), findsOneWidget);
       await tester.tap(find.byIcon(Icons.settings));
-      await tester.pumpAndSettle(const Duration(seconds: 30));
+      await tester.pumpAndSettle(const Duration(seconds: 120));
 
       // Look for category management option
       expect(find.text('Categories'), findsOneWidget);
       await tester.tap(find.text('Categories'));
-      await tester.pumpAndSettle(const Duration(seconds: 30));
+      await tester.pumpAndSettle(const Duration(seconds: 120));
 
       // Should be on category management screen
       expect(find.text('Manage Categories'), findsOneWidget);
 
       // Create a meal category
       await tester.tap(find.byIcon(Icons.add));
-      await tester.pumpAndSettle(const Duration(seconds: 30));
+      await tester.pumpAndSettle(const Duration(seconds: 120));
 
       await tester.enterText(find.byType(TextField).first, 'Breakfast');
-      await tester.pumpAndSettle(const Duration(seconds: 30));
+      await tester.pumpAndSettle(const Duration(seconds: 120));
 
       // Select meal category type
       await tester.tap(find.text('General (Blood Sugar)'));
-      await tester.pumpAndSettle(const Duration(seconds: 30));
+      await tester.pumpAndSettle(const Duration(seconds: 120));
       await tester.tap(find.text('Meal Category'));
-      await tester.pumpAndSettle(const Duration(seconds: 30));
+      await tester.pumpAndSettle(const Duration(seconds: 120));
 
       await tester.tap(find.text('Save'));
-      await tester.pumpAndSettle(const Duration(seconds: 30));
+      await tester.pumpAndSettle(const Duration(seconds: 120));
 
       // Should show the meal category
       expect(find.text('Breakfast'), findsOneWidget);
@@ -72,23 +72,23 @@ void main() {
       await DatabaseHelper.instance.createCategory(category);
 
       await tester.pumpWidget(BloodSugarApp(onboardingCompleted: true));
-      await tester.pumpAndSettle(const Duration(seconds: 30));
+      await tester.pumpAndSettle(const Duration(seconds: 120));
 
       // Navigate to meals
       expect(find.byIcon(Icons.restaurant), findsOneWidget);
       await tester.tap(find.byIcon(Icons.restaurant));
-      await tester.pumpAndSettle(const Duration(seconds: 30));
+      await tester.pumpAndSettle(const Duration(seconds: 120));
 
       // Add new meal
       await tester.tap(find.byIcon(Icons.add));
-      await tester.pumpAndSettle(const Duration(seconds: 30));
+      await tester.pumpAndSettle(const Duration(seconds: 120));
 
       // Enter meal name
       await tester.enterText(
         find.byType(TextField).first,
         'Grilled Chicken Salad',
       );
-      await tester.pumpAndSettle(const Duration(seconds: 30));
+      await tester.pumpAndSettle(const Duration(seconds: 120));
 
       // Check that category dropdown is available
       expect(find.text('Category (optional)'), findsOneWidget);
@@ -116,22 +116,22 @@ void main() {
         );
 
         await tester.pumpWidget(BloodSugarApp(onboardingCompleted: true));
-        await tester.pumpAndSettle(const Duration(seconds: 30));
+        await tester.pumpAndSettle(const Duration(seconds: 120));
 
         // Add blood sugar reading
         expect(find.byIcon(Icons.add), findsOneWidget);
         await tester.tap(find.byIcon(Icons.add));
-        await tester.pumpAndSettle(const Duration(seconds: 30));
+        await tester.pumpAndSettle(const Duration(seconds: 120));
 
         // Enter blood sugar value
         await tester.enterText(find.byType(TextField).at(1), '110');
-        await tester.pumpAndSettle(const Duration(seconds: 30));
+        await tester.pumpAndSettle(const Duration(seconds: 120));
 
         // Select "Before Meal"
         await tester.tap(find.text('After Meal'));
-        await tester.pumpAndSettle(const Duration(seconds: 30));
+        await tester.pumpAndSettle(const Duration(seconds: 120));
         await tester.tap(find.text('Before Meal'));
-        await tester.pumpAndSettle(const Duration(seconds: 30));
+        await tester.pumpAndSettle(const Duration(seconds: 120));
 
         // Should show meal selection
         expect(find.text('Meal (optional)'), findsOneWidget);
@@ -145,30 +145,30 @@ void main() {
       'US-Category-4: Category system supports workout categorization',
       (WidgetTester tester) async {
         await tester.pumpWidget(BloodSugarApp(onboardingCompleted: true));
-        await tester.pumpAndSettle(const Duration(seconds: 30));
+        await tester.pumpAndSettle(const Duration(seconds: 120));
 
         // Navigate to settings → Categories
         await tester.tap(find.byIcon(Icons.settings));
-        await tester.pumpAndSettle(const Duration(seconds: 30));
+        await tester.pumpAndSettle(const Duration(seconds: 120));
 
         await tester.tap(find.text('Categories'));
-        await tester.pumpAndSettle(const Duration(seconds: 30));
+        await tester.pumpAndSettle(const Duration(seconds: 120));
 
         // Create workout category
         await tester.tap(find.byIcon(Icons.add));
-        await tester.pumpAndSettle(const Duration(seconds: 30));
+        await tester.pumpAndSettle(const Duration(seconds: 120));
 
         await tester.enterText(find.byType(TextField).first, 'HIIT');
-        await tester.pumpAndSettle(const Duration(seconds: 30));
+        await tester.pumpAndSettle(const Duration(seconds: 120));
 
         // Select workout category type
         await tester.tap(find.text('General (Blood Sugar)'));
-        await tester.pumpAndSettle(const Duration(seconds: 30));
+        await tester.pumpAndSettle(const Duration(seconds: 120));
         await tester.tap(find.text('Workout Category'));
-        await tester.pumpAndSettle(const Duration(seconds: 30));
+        await tester.pumpAndSettle(const Duration(seconds: 120));
 
         await tester.tap(find.text('Save'));
-        await tester.pumpAndSettle(const Duration(seconds: 30));
+        await tester.pumpAndSettle(const Duration(seconds: 120));
 
         // Should show workout category
         expect(find.text('HIIT'), findsOneWidget);

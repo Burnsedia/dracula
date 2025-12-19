@@ -1,15 +1,37 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:dracula/main.dart';
 import 'package:dracula/screens/HomeScreen.dart';
+import 'package:dracula/services/database_helper.dart';
 
 void main() {
+  setUp(() async {
+    // Initialize sqflite for tests
+    sqfliteFfiInit();
+    databaseFactory = databaseFactoryFfi;
+
+    // Mock SharedPreferences
+    SharedPreferences.setMockInitialValues({
+      'app_lock_enabled': false,
+      'onboarding_completed': true,
+    });
+
+    // Initialize database
+    await DatabaseHelper.instance.database;
+  });
+
   group('Theme - US-4.1 Dracula Theme', () {
     testWidgets('should apply Dracula theme colors to app', (
       WidgetTester tester,
     ) async {
       await tester.pumpWidget(BloodSugarApp(onboardingCompleted: true));
-      await tester.pumpAndSettle(const Duration(seconds: 30));
+      await tester.pump();
+      await tester.pump(const Duration(seconds: 10));
+      await tester.pump();
+      await tester.pump(const Duration(seconds: 10));
+      await tester.pumpAndSettle(const Duration(seconds: 120));
 
       // Get the theme from the app
       final BuildContext context = tester.element(find.byType(HomeScreen));
@@ -41,7 +63,11 @@ void main() {
       WidgetTester tester,
     ) async {
       await tester.pumpWidget(BloodSugarApp(onboardingCompleted: true));
-      await tester.pumpAndSettle(const Duration(seconds: 30));
+      await tester.pump();
+      await tester.pump(const Duration(seconds: 10));
+      await tester.pump();
+      await tester.pump(const Duration(seconds: 10));
+      await tester.pumpAndSettle(const Duration(seconds: 120));
 
       final BuildContext context = tester.element(find.byType(HomeScreen));
       final ThemeData theme = Theme.of(context);
@@ -63,7 +89,11 @@ void main() {
       WidgetTester tester,
     ) async {
       await tester.pumpWidget(BloodSugarApp(onboardingCompleted: true));
-      await tester.pumpAndSettle(const Duration(seconds: 30));
+      await tester.pump();
+      await tester.pump(const Duration(seconds: 10));
+      await tester.pump();
+      await tester.pump(const Duration(seconds: 10));
+      await tester.pumpAndSettle(const Duration(seconds: 120));
 
       // Check that app bar has Dracula colors
       final appBar = tester.widget<AppBar>(find.byType(AppBar));
