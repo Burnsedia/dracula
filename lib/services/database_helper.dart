@@ -23,7 +23,7 @@ class DatabaseHelper {
 
     return await openDatabase(
       path,
-      version: 6,
+      version: 7,
       onCreate: _createDB,
       onUpgrade: _upgradeDB,
     );
@@ -126,7 +126,7 @@ CREATE TABLE meals (
    )
 ''');
     }
-    if (oldVersion < 5) {
+    if (oldVersion < 6) {
       // Add mealId column to blood_sugar_logs
       await db.execute(
         'ALTER TABLE blood_sugar_logs ADD COLUMN mealId INTEGER',
