@@ -24,7 +24,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.24.0'
+          flutter-version: '3.38.3'
       - run: flutter pub get
       - run: flutter build apk --debug
       - uses: actions/upload-artifact@v4
@@ -38,7 +38,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.24.0'
+          flutter-version: '3.38.3'
       - run: flutter pub get
       - run: flutter build ios --simulator --no-codesign
       - uses: actions/upload-artifact@v4
