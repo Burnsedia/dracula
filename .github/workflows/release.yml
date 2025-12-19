@@ -10,9 +10,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: subosito/flutter-action@v2.12.0
+      - uses: subosito/flutter-action@v2.10.0
         with:
-          flutter-version: '3.24.0'
+          flutter-version: '3.22.0'
       - run: flutter pub get
       - name: Create keystore
         run: |
@@ -62,9 +62,9 @@ jobs:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: subosito/flutter-action@v2.12.0
+      - uses: subosito/flutter-action@v2.10.0
         with:
-          flutter-version: '3.24.0'
+          flutter-version: '3.22.0'
       - run: flutter pub get
       - run: flutter build ipa --release --export-options-plist=ios/exportOptions.plist
         env:

@@ -11,9 +11,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: subosito/flutter-action@v2.12.0
+      - uses: subosito/flutter-action@v2.10.0
         with:
-          flutter-version: '3.24.0'
+          flutter-version: '3.22.0'
       - run: flutter --version
       - run: flutter pub get
       - run: ls -la
@@ -24,9 +24,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: subosito/flutter-action@v2.12.0
+      - uses: subosito/flutter-action@v2.10.0
         with:
-          flutter-version: '3.24.0'
+          flutter-version: '3.22.0'
       - run: flutter pub get
       - run: flutter build apk --debug
       - uses: actions/upload-artifact@v4
@@ -38,9 +38,9 @@ jobs:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: subosito/flutter-action@v2.12.0
+      - uses: subosito/flutter-action@v2.10.0
         with:
-          flutter-version: '3.24.0'
+          flutter-version: '3.22.0'
       - run: flutter pub get
       - run: flutter build ios --simulator --no-codesign
       - uses: actions/upload-artifact@v4
