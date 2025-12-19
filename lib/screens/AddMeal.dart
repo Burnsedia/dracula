@@ -50,39 +50,54 @@ class _AddMealScreenState extends State<AddMealScreen> {
     selectedDateTime = widget.record?.dateTime ?? DateTime.now();
     selectedCategoryId = widget.record?.categoryId;
     nameController = TextEditingController(text: widget.record?.name ?? '');
-    carbsController =
-        TextEditingController(text: widget.record?.carbs?.toString() ?? '');
-    proteinController =
-        TextEditingController(text: widget.record?.protein?.toString() ?? '');
-    fatController =
-        TextEditingController(text: widget.record?.fat?.toString() ?? '');
-    caloriesController =
-        TextEditingController(text: widget.record?.calories?.toString() ?? '');
-    fiberController =
-        TextEditingController(text: widget.record?.fiber?.toString() ?? '');
-    sugarController =
-        TextEditingController(text: widget.record?.sugar?.toString() ?? '');
-    sodiumController =
-        TextEditingController(text: widget.record?.sodium?.toString() ?? '');
-    vitaminCController =
-        TextEditingController(text: widget.record?.vitaminC?.toString() ?? '');
-    calciumController =
-        TextEditingController(text: widget.record?.calcium?.toString() ?? '');
-    ironController =
-        TextEditingController(text: widget.record?.iron?.toString() ?? '');
+    carbsController = TextEditingController(
+      text: widget.record?.carbs?.toString() ?? '',
+    );
+    proteinController = TextEditingController(
+      text: widget.record?.protein?.toString() ?? '',
+    );
+    fatController = TextEditingController(
+      text: widget.record?.fat?.toString() ?? '',
+    );
+    caloriesController = TextEditingController(
+      text: widget.record?.calories?.toString() ?? '',
+    );
+    fiberController = TextEditingController(
+      text: widget.record?.fiber?.toString() ?? '',
+    );
+    sugarController = TextEditingController(
+      text: widget.record?.sugar?.toString() ?? '',
+    );
+    sodiumController = TextEditingController(
+      text: widget.record?.sodium?.toString() ?? '',
+    );
+    vitaminCController = TextEditingController(
+      text: widget.record?.vitaminC?.toString() ?? '',
+    );
+    calciumController = TextEditingController(
+      text: widget.record?.calcium?.toString() ?? '',
+    );
+    ironController = TextEditingController(
+      text: widget.record?.iron?.toString() ?? '',
+    );
     bloodSugarBeforeController = TextEditingController(
-        text: widget.record?.bloodSugarBefore?.toString() ?? '');
+      text: widget.record?.bloodSugarBefore?.toString() ?? '',
+    );
     bloodSugarAfterController = TextEditingController(
-        text: widget.record?.bloodSugarAfter?.toString() ?? '');
+      text: widget.record?.bloodSugarAfter?.toString() ?? '',
+    );
     _loadMealCategories();
   }
 
   Future<void> _loadMealCategories() async {
     final allCategories = await DatabaseHelper.instance.readAllCategories();
-    setState(() {
-      mealCategories =
-          allCategories.where((cat) => cat.type == CategoryType.meal).toList();
-    });
+    if (mounted) {
+      setState(() {
+        mealCategories = allCategories
+            .where((cat) => cat.type == CategoryType.meal)
+            .toList();
+      });
+    }
   }
 
   Future<void> _selectDateTime() async {
@@ -122,8 +137,10 @@ class _AddMealScreenState extends State<AddMealScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text('Premade Meals',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            const Text(
+              'Premade Meals',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
             const SizedBox(height: 8),
             Wrap(
               spacing: 8.0,
@@ -149,24 +166,29 @@ class _AddMealScreenState extends State<AddMealScreen> {
             ),
             const SizedBox(height: 16),
             DropdownButtonFormField<int>(
-              decoration:
-                  const InputDecoration(labelText: 'Category (optional)'),
+              decoration: const InputDecoration(
+                labelText: 'Category (optional)',
+              ),
               value: selectedCategoryId,
               items: [
                 const DropdownMenuItem<int>(
                   value: null,
                   child: Text('No category'),
                 ),
-                ...mealCategories.map((category) => DropdownMenuItem<int>(
-                      value: category.id,
-                      child: Text(category.name),
-                    )),
+                ...mealCategories.map(
+                  (category) => DropdownMenuItem<int>(
+                    value: category.id,
+                    child: Text(category.name),
+                  ),
+                ),
               ],
               onChanged: (value) => setState(() => selectedCategoryId = value),
             ),
             const SizedBox(height: 16),
-            const Text('Macros',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            const Text(
+              'Macros',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
             TextField(
               controller: caloriesController,
               keyboardType: TextInputType.number,
@@ -188,8 +210,10 @@ class _AddMealScreenState extends State<AddMealScreen> {
               decoration: const InputDecoration(labelText: 'Fat (g)'),
             ),
             const SizedBox(height: 16),
-            const Text('Micros',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            const Text(
+              'Micros',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
             TextField(
               controller: fiberController,
               keyboardType: TextInputType.number,
@@ -221,19 +245,23 @@ class _AddMealScreenState extends State<AddMealScreen> {
               decoration: const InputDecoration(labelText: 'Iron (mg)'),
             ),
             const SizedBox(height: 16),
-            const Text('Blood Sugar Correlation',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            const Text(
+              'Blood Sugar Correlation',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
             TextField(
               controller: bloodSugarBeforeController,
               keyboardType: TextInputType.number,
               decoration: const InputDecoration(
-                  labelText: 'Blood Sugar Before (optional)'),
+                labelText: 'Blood Sugar Before (optional)',
+              ),
             ),
             TextField(
               controller: bloodSugarAfterController,
               keyboardType: TextInputType.number,
               decoration: const InputDecoration(
-                  labelText: 'Blood Sugar After (optional)'),
+                labelText: 'Blood Sugar After (optional)',
+              ),
             ),
             const SizedBox(height: 16),
             FilledButton(
@@ -261,10 +289,12 @@ class _AddMealScreenState extends State<AddMealScreen> {
                   vitaminC: double.tryParse(vitaminCController.text),
                   calcium: double.tryParse(calciumController.text),
                   iron: double.tryParse(ironController.text),
-                  bloodSugarBefore:
-                      double.tryParse(bloodSugarBeforeController.text),
-                  bloodSugarAfter:
-                      double.tryParse(bloodSugarAfterController.text),
+                  bloodSugarBefore: double.tryParse(
+                    bloodSugarBeforeController.text,
+                  ),
+                  bloodSugarAfter: double.tryParse(
+                    bloodSugarAfterController.text,
+                  ),
                 );
 
                 try {
@@ -272,8 +302,9 @@ class _AddMealScreenState extends State<AddMealScreen> {
                     await DatabaseHelper.instance.updateMeal(meal);
                     if (mounted) Navigator.pop(context, meal);
                   } else {
-                    final saved =
-                        await DatabaseHelper.instance.createMeal(meal);
+                    final saved = await DatabaseHelper.instance.createMeal(
+                      meal,
+                    );
                     if (mounted) Navigator.pop(context, saved);
                   }
                 } catch (e) {
