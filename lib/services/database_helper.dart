@@ -126,7 +126,7 @@ CREATE TABLE meals (
    )
 ''');
     }
-    if (oldVersion < 6) {
+    if (oldVersion < 7) {
       // Add mealId column to blood_sugar_logs
       await db.execute(
         'ALTER TABLE blood_sugar_logs ADD COLUMN mealId INTEGER',
