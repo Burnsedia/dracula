@@ -1,13 +1,15 @@
+import 'dart:io' show Platform;
+
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'dart:io' show Platform;
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
-import "./screens/HomeScreen.dart";
-import "./screens/onboarding.dart";
-import "./screens/app_lock_screen.dart";
 
-import "./services/notification_service.dart";
+import "./screens/HomeScreen.dart";
+import "./screens/MainNavigation.dart";
+import "./screens/app_lock_screen.dart";
+import "./screens/onboarding.dart";
 import "./services/database_helper.dart";
+import "./services/notification_service.dart";
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -43,7 +45,9 @@ class BloodSugarApp extends StatelessWidget {
       title: 'Dracula',
       theme: _buildDraculaTheme(),
       home: AppLockScreen(
-        child: onboardingCompleted ? HomeScreen() : OnboardingScreen(),
+        child: onboardingCompleted
+            ? const MainNavigation()
+            : OnboardingScreen(),
       ),
     );
   }
