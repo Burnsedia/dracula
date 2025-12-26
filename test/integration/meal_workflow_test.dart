@@ -29,9 +29,9 @@ void main() {
       await tester.pumpWidget(BloodSugarApp(onboardingCompleted: true));
       await tester.pumpAndSettle(const Duration(seconds: 120));
 
-      // Navigate to meals (assuming home screen has meal button)
-      expect(find.byIcon(Icons.restaurant), findsOneWidget);
-      await tester.tap(find.byIcon(Icons.restaurant));
+      // Navigate to meals via bottom nav
+      expect(find.text('Meals'), findsOneWidget);
+      await tester.tap(find.text('Meals'));
       await tester.pumpAndSettle(const Duration(seconds: 120));
 
       // Should be on meal list screen
@@ -90,8 +90,8 @@ void main() {
       await tester.pumpWidget(BloodSugarApp(onboardingCompleted: true));
       await tester.pumpAndSettle(const Duration(seconds: 120));
 
-      // Navigate to meals
-      await tester.tap(find.byIcon(Icons.restaurant));
+      // Navigate to meals via bottom nav
+      await tester.tap(find.text('Meals'));
       await tester.pumpAndSettle(const Duration(seconds: 120));
 
       // Long press the meal to edit
