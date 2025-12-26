@@ -27,12 +27,12 @@ void main() {
       WidgetTester tester,
     ) async {
       await tester.pumpWidget(BloodSugarApp(onboardingCompleted: true));
-      await tester.pumpAndSettle(const Duration(seconds: 5));
+      await tester.pumpAndSettle(const Duration(milliseconds: 500));
 
       // Navigate to meals via bottom nav
       expect(find.text('Meals'), findsOneWidget);
       await tester.tap(find.text('Meals'));
-      await tester.pumpAndSettle(const Duration(seconds: 5));
+      await tester.pumpAndSettle(const Duration(milliseconds: 500));
 
       // Should be on meal list screen
       expect(find.text('Meals'), findsOneWidget);
@@ -40,14 +40,14 @@ void main() {
 
       // Tap add button
       await tester.tap(find.byIcon(Icons.add));
-      await tester.pumpAndSettle(const Duration(seconds: 5));
+      await tester.pumpAndSettle(const Duration(milliseconds: 500));
 
       // Should be on add meal screen
       expect(find.text('Add Meal'), findsOneWidget);
 
       // Fill in meal details
       await tester.enterText(find.byType(TextField).first, 'Breakfast Burrito');
-      await tester.pumpAndSettle(const Duration(seconds: 5));
+      await tester.pumpAndSettle(const Duration(milliseconds: 500));
 
       // Enter nutrients
       final textFields = find.byType(TextField);
@@ -61,11 +61,11 @@ void main() {
       await tester.enterText(textFields.at(8), '15'); // Vitamin C
       await tester.enterText(textFields.at(9), '150'); // Calcium
       await tester.enterText(textFields.at(10), '3'); // Iron
-      await tester.pumpAndSettle(const Duration(seconds: 5));
+      await tester.pumpAndSettle(const Duration(milliseconds: 500));
 
       // Save the meal
       await tester.tap(find.text('Save Meal'));
-      await tester.pumpAndSettle(const Duration(seconds: 5));
+      await tester.pumpAndSettle(const Duration(milliseconds: 500));
 
       // Should return to meal list
       expect(find.text('Meals'), findsOneWidget);
@@ -88,19 +88,19 @@ void main() {
       await DatabaseHelper.instance.createMeal(testMeal);
 
       await tester.pumpWidget(BloodSugarApp(onboardingCompleted: true));
-      await tester.pumpAndSettle(const Duration(seconds: 5));
+      await tester.pumpAndSettle(const Duration(milliseconds: 500));
 
       // Navigate to meals via bottom nav
       await tester.tap(find.text('Meals'));
-      await tester.pumpAndSettle(const Duration(seconds: 5));
+      await tester.pumpAndSettle(const Duration(milliseconds: 500));
 
       // Long press the meal to edit
       final mealCard = find.byType(Card).first;
       await tester.longPress(mealCard);
-      await tester.pumpAndSettle(const Duration(seconds: 5));
+      await tester.pumpAndSettle(const Duration(milliseconds: 500));
 
       await tester.tap(find.text('Edit'));
-      await tester.pumpAndSettle(const Duration(seconds: 5));
+      await tester.pumpAndSettle(const Duration(milliseconds: 500));
 
       // Should be on edit screen
       expect(find.text('Edit Meal'), findsOneWidget);
@@ -108,11 +108,11 @@ void main() {
       // Update the name
       final nameField = find.byType(TextField).first;
       await tester.enterText(nameField, 'Updated Lunch Salad');
-      await tester.pumpAndSettle(const Duration(seconds: 5));
+      await tester.pumpAndSettle(const Duration(milliseconds: 500));
 
       // Save changes
       await tester.tap(find.text('Save Meal'));
-      await tester.pumpAndSettle(const Duration(seconds: 5));
+      await tester.pumpAndSettle(const Duration(milliseconds: 500));
 
       // Should show updated meal
       expect(find.text('Updated Lunch Salad'), findsOneWidget);
@@ -130,23 +130,23 @@ void main() {
       await DatabaseHelper.instance.createMeal(testMeal);
 
       await tester.pumpWidget(BloodSugarApp(onboardingCompleted: true));
-      await tester.pumpAndSettle(const Duration(seconds: 5));
+      await tester.pumpAndSettle(const Duration(milliseconds: 500));
 
       // Navigate to meals
       await tester.tap(find.byIcon(Icons.restaurant));
-      await tester.pumpAndSettle(const Duration(seconds: 5));
+      await tester.pumpAndSettle(const Duration(milliseconds: 500));
 
       // Long press to delete
       final mealCard = find.byType(Card).first;
       await tester.longPress(mealCard);
-      await tester.pumpAndSettle(const Duration(seconds: 5));
+      await tester.pumpAndSettle(const Duration(milliseconds: 500));
 
       await tester.tap(find.text('Delete'));
-      await tester.pumpAndSettle(const Duration(seconds: 5));
+      await tester.pumpAndSettle(const Duration(milliseconds: 500));
 
       // Confirm deletion
       await tester.tap(find.text('Delete'));
-      await tester.pumpAndSettle(const Duration(seconds: 5));
+      await tester.pumpAndSettle(const Duration(milliseconds: 500));
 
       // Should show empty state
       expect(find.text('No meals logged yet'), findsOneWidget);
@@ -160,28 +160,28 @@ void main() {
       // For now, just verify meals can be logged with blood sugar data
 
       await tester.pumpWidget(BloodSugarApp(onboardingCompleted: true));
-      await tester.pumpAndSettle(const Duration(seconds: 5));
+      await tester.pumpAndSettle(const Duration(milliseconds: 500));
 
       // Navigate to meals
       await tester.tap(find.byIcon(Icons.restaurant));
-      await tester.pumpAndSettle(const Duration(seconds: 5));
+      await tester.pumpAndSettle(const Duration(milliseconds: 500));
 
       // Add a meal with blood sugar data
       await tester.tap(find.byIcon(Icons.add));
-      await tester.pumpAndSettle(const Duration(seconds: 5));
+      await tester.pumpAndSettle(const Duration(milliseconds: 500));
 
       await tester.enterText(find.byType(TextField).first, 'High Carb Meal');
-      await tester.pumpAndSettle(const Duration(seconds: 5));
+      await tester.pumpAndSettle(const Duration(milliseconds: 500));
 
       // Enter blood sugar values
       final textFields = find.byType(TextField);
       await tester.enterText(textFields.at(11), '95'); // Before
       await tester.enterText(textFields.at(12), '140'); // After
-      await tester.pumpAndSettle(const Duration(seconds: 5));
+      await tester.pumpAndSettle(const Duration(milliseconds: 500));
 
       // Save
       await tester.tap(find.text('Save Meal'));
-      await tester.pumpAndSettle(const Duration(seconds: 5));
+      await tester.pumpAndSettle(const Duration(milliseconds: 500));
 
       // Verify blood sugar data is displayed
       expect(find.text('Blood Sugar After: 140.0'), findsOneWidget);
