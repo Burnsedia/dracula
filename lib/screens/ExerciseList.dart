@@ -3,6 +3,7 @@ import "../models/exercise.dart";
 import "../services/database_helper.dart";
 import "../services/settings_service.dart";
 import "./AddExercise.dart";
+import "./settings.dart";
 
 class ExerciseListScreen extends StatefulWidget {
   @override
@@ -46,8 +47,10 @@ class _ExerciseListScreenState extends State<ExerciseListScreen> {
               ),
               ListTile(
                 leading: const Icon(Icons.delete, color: Colors.red),
-                title:
-                    const Text('Delete', style: TextStyle(color: Colors.red)),
+                title: const Text(
+                  'Delete',
+                  style: TextStyle(color: Colors.red),
+                ),
                 onTap: () {
                   Navigator.pop(context);
                   _confirmDelete(record);
@@ -80,7 +83,8 @@ class _ExerciseListScreenState extends State<ExerciseListScreen> {
         return AlertDialog(
           title: const Text('Delete Record'),
           content: const Text(
-              'Are you sure you want to delete this exercise record?'),
+            'Are you sure you want to delete this exercise record?',
+          ),
           actions: <Widget>[
             TextButton(
               child: const Text('Cancel'),
@@ -120,38 +124,51 @@ class _ExerciseListScreenState extends State<ExerciseListScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Exercise Tracker'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.more_vert),
+            onPressed: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const SettingsScreen()),
+            ),
+            tooltip: 'Settings',
+          ),
+        ],
       ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : exerciseRecords.isEmpty
-              ? const Center(
-                  child: Text(
-                    'No exercise records yet.\nTap + to add your first entry.',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 16, color: Colors.grey),
+          ? const Center(
+              child: Text(
+                'No exercise records yet.\nTap + to add your first entry.',
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 16, color: Colors.grey),
+              ),
+            )
+          : ListView.builder(
+              itemCount: exerciseRecords.length,
+              itemBuilder: (context, index) {
+                final record = exerciseRecords[index];
+                return Card(
+                  margin: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 4,
                   ),
-                )
-              : ListView.builder(
-                  itemCount: exerciseRecords.length,
-                  itemBuilder: (context, index) {
-                    final record = exerciseRecords[index];
-                    return Card(
-                      margin: const EdgeInsets.symmetric(
-                          horizontal: 16, vertical: 4),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: ListTile(
-                        title: Text(
-                            '${record.exerciseType} - ${record.durationMinutes} min'),
-                        subtitle: Text(
-                          'Before: ${record.beforeBloodSugar?.toStringAsFixed(1) ?? 'N/A'}, After: ${record.afterBloodSugar?.toStringAsFixed(1) ?? 'N/A'} • ${record.createdAt.toString().split(' ')[0]}',
-                        ),
-                        onLongPress: () => _showEditDeleteMenu(context, record),
-                      ),
-                    );
-                  },
-                ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: ListTile(
+                    title: Text(
+                      '${record.exerciseType} - ${record.durationMinutes} min',
+                    ),
+                    subtitle: Text(
+                      'Before: ${record.beforeBloodSugar?.toStringAsFixed(1) ?? 'N/A'}, After: ${record.afterBloodSugar?.toStringAsFixed(1) ?? 'N/A'} • ${record.createdAt.toString().split(' ')[0]}',
+                    ),
+                    onLongPress: () => _showEditDeleteMenu(context, record),
+                  ),
+                );
+              },
+            ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
           final newRecord = await Navigator.push(
