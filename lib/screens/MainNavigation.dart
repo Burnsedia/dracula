@@ -4,6 +4,7 @@ import '../screens/ChartsScreen.dart';
 import '../screens/AnalyticsScreen.dart';
 import '../screens/ExerciseList.dart';
 import '../screens/MealList.dart';
+import './settings.dart';
 
 class MainNavigation extends StatefulWidget {
   const MainNavigation({super.key});
@@ -21,6 +22,7 @@ class _MainNavigationState extends State<MainNavigation> {
     AnalyticsScreen(),
     ExerciseListScreen(),
     MealListScreen(),
+    SettingsScreen(),
   ];
 
   void _onItemTapped(int index) {
@@ -61,7 +63,7 @@ class _MainNavigationState extends State<MainNavigation> {
             icon: Icon(
               _selectedIndex == 2 ? Icons.analytics : Icons.analytics_outlined,
             ),
-            label: 'Insights',
+            label: 'Analytics',
           ),
           BottomNavigationBarItem(
             icon: Icon(
@@ -78,6 +80,12 @@ class _MainNavigationState extends State<MainNavigation> {
                   : Icons.restaurant_outlined,
             ),
             label: 'Meals',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(
+              _selectedIndex == 5 ? Icons.settings : Icons.settings_outlined,
+            ),
+            label: 'Settings',
           ),
         ],
       ),
