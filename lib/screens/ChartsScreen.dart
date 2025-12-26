@@ -3,7 +3,6 @@ import 'package:fl_chart/fl_chart.dart';
 import '../models/bloodsugar.dart';
 import '../services/database_helper.dart';
 import '../services/settings_service.dart';
-import './settings.dart';
 
 class ChartsScreen extends StatefulWidget {
   @override
@@ -99,14 +98,6 @@ class _ChartsScreenState extends State<ChartsScreen> {
       appBar: AppBar(
         title: const Text('Blood Sugar Trends'),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.more_vert),
-            onPressed: () => Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const SettingsScreen()),
-            ),
-            tooltip: 'Settings',
-          ),
           PopupMenuButton<String>(
             onSelected: (value) {
               setState(() => _selectedPeriod = value);

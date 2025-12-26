@@ -4,7 +4,6 @@ import "../models/category.dart";
 import "../services/database_helper.dart";
 import "../services/settings_service.dart";
 import "./AddBloodSugar.dart";
-import "./settings.dart";
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -253,23 +252,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Blood Sugar Tracker'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.more_vert),
-            onPressed: () async {
-              await Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const SettingsScreen()),
-              );
-              // Reload settings and records when returning from settings
-              await _loadSettingsAndRecords();
-            },
-            tooltip: 'Settings',
-          ),
-        ],
-      ),
+      appBar: AppBar(title: const Text('Blood Sugar Tracker')),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : Column(

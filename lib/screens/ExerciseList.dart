@@ -3,7 +3,6 @@ import "../models/exercise.dart";
 import "../services/database_helper.dart";
 import "../services/settings_service.dart";
 import "./AddExercise.dart";
-import "./settings.dart";
 
 class ExerciseListScreen extends StatefulWidget {
   @override
@@ -123,19 +122,7 @@ class _ExerciseListScreenState extends State<ExerciseListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Exercise Tracker'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.more_vert),
-            onPressed: () => Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const SettingsScreen()),
-            ),
-            tooltip: 'Settings',
-          ),
-        ],
-      ),
+      appBar: AppBar(title: const Text('Exercise Tracker')),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : exerciseRecords.isEmpty

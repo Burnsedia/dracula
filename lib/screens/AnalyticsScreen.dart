@@ -5,7 +5,6 @@ import '../models/bloodsugar.dart';
 import '../models/exercise.dart';
 import '../services/database_helper.dart';
 import '../services/settings_service.dart';
-import './settings.dart';
 
 class AnalyticsScreen extends StatefulWidget {
   @override
@@ -113,19 +112,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
     final recentRecords = _getRecentRecords(30);
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Health Analytics'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.more_vert),
-            onPressed: () => Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const SettingsScreen()),
-            ),
-            tooltip: 'Settings',
-          ),
-        ],
-      ),
+      appBar: AppBar(title: const Text('Health Analytics')),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : SingleChildScrollView(

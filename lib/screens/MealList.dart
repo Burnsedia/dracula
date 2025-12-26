@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import "../models/meal.dart";
 import "../services/database_helper.dart";
 import "./AddMeal.dart";
-import "./settings.dart";
 
 class MealListScreen extends StatefulWidget {
   @override
@@ -109,19 +108,7 @@ class _MealListScreenState extends State<MealListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Meals'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.more_vert),
-            onPressed: () => Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const SettingsScreen()),
-            ),
-            tooltip: 'Settings',
-          ),
-        ],
-      ),
+      appBar: AppBar(title: const Text('Meals')),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : mealRecords.isEmpty
