@@ -23,7 +23,7 @@ class _ChartsScreenState extends State<ChartsScreen> {
   }
 
   Future<void> _loadData() async {
-    setState(() => _isLoading = true);
+    if (mounted) setState(() => _isLoading = true);
     final unit = await SettingsService().getBloodSugarUnit();
     final allRecords = await DatabaseHelper.instance.readAll();
 
@@ -40,12 +40,13 @@ class _ChartsScreenState extends State<ChartsScreen> {
         .where((r) => r.createdAt.isAfter(cutoff))
         .toList();
 
-    setState(() {
-      _displayUnit = unit;
-      records = filteredRecords
-        ..sort((a, b) => a.createdAt.compareTo(b.createdAt));
-      _isLoading = false;
-    });
+    if (mounted)
+      setState(() {
+        _displayUnit = unit;
+        records = filteredRecords
+          ..sort((a, b) => a.createdAt.compareTo(b.createdAt));
+        _isLoading = false;
+      });
   }
 
   List<FlSpot> _generateSpots() {

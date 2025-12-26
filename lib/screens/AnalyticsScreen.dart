@@ -25,16 +25,17 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
   }
 
   Future<void> _loadData() async {
-    setState(() => _isLoading = true);
+    if (mounted) setState(() => _isLoading = true);
     final unit = await SettingsService().getBloodSugarUnit();
     final bloodSugar = await DatabaseHelper.instance.readAll();
     final exercises = await DatabaseHelper.instance.readAllExercises();
-    setState(() {
-      _displayUnit = unit;
-      bloodSugarRecords = bloodSugar;
-      exerciseRecords = exercises;
-      _isLoading = false;
-    });
+    if (mounted)
+      setState(() {
+        _displayUnit = unit;
+        bloodSugarRecords = bloodSugar;
+        exerciseRecords = exercises;
+        _isLoading = false;
+      });
   }
 
   List<BloodSugarLog> _getRecentRecords(int days) {

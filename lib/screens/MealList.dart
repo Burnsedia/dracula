@@ -20,12 +20,13 @@ class _MealListScreenState extends State<MealListScreen> {
   }
 
   Future<void> _loadRecords() async {
-    setState(() => _isLoading = true);
+    if (mounted) setState(() => _isLoading = true);
     final records = await DatabaseHelper.instance.readAllMeals();
-    setState(() {
-      mealRecords = records;
-      _isLoading = false;
-    });
+    if (mounted)
+      setState(() {
+        mealRecords = records;
+        _isLoading = false;
+      });
   }
 
   void _showEditDeleteMenu(BuildContext context, Meal record) {

@@ -25,7 +25,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _loadSettingsAndRecords() async {
-    setState(() => _isLoading = true);
+    if (mounted) setState(() => _isLoading = true);
 
     // Load settings
     final unit = await SettingsService().getBloodSugarUnit();
@@ -36,18 +36,19 @@ class _HomeScreenState extends State<HomeScreen> {
     final categories = await DatabaseHelper.instance.readAllCategories();
     final categoriesMap = {for (var cat in categories) cat.id!: cat};
 
-    setState(() {
-      _displayUnit = unit;
-      _showTimezone = showTimezone;
-      bloodSugarRecords = records;
-      this.categoriesMap = categoriesMap;
-      _isLoading = false;
-    });
+    if (mounted)
+      setState(() {
+        _displayUnit = unit;
+        _showTimezone = showTimezone;
+        bloodSugarRecords = records;
+        this.categoriesMap = categoriesMap;
+        _isLoading = false;
+      });
   }
 
   Future<void> _loadRecords() async {
     final records = await DatabaseHelper.instance.readAll();
-    setState(() => bloodSugarRecords = records);
+    if (mounted) setState(() => bloodSugarRecords = records);
   }
 
   void _showEditDeleteMenu(BuildContext context, BloodSugarLog record) {

@@ -21,12 +21,13 @@ class _ExerciseListScreenState extends State<ExerciseListScreen> {
   }
 
   Future<void> _loadRecords() async {
-    setState(() => _isLoading = true);
+    if (mounted) setState(() => _isLoading = true);
     final records = await DatabaseHelper.instance.readAllExercises();
-    setState(() {
-      exerciseRecords = records;
-      _isLoading = false;
-    });
+    if (mounted)
+      setState(() {
+        exerciseRecords = records;
+        _isLoading = false;
+      });
   }
 
   void _showEditDeleteMenu(BuildContext context, ExerciseLog record) {
