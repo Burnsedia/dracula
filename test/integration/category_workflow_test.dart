@@ -30,9 +30,9 @@ void main() {
       await tester.pumpWidget(BloodSugarApp(onboardingCompleted: true));
       await tester.pumpAndSettle(const Duration(seconds: 120));
 
-      // Navigate to settings (where categories are managed)
-      expect(find.byIcon(Icons.settings), findsOneWidget);
-      await tester.tap(find.byIcon(Icons.settings));
+      // Navigate to settings (where categories are managed) via bottom nav
+      expect(find.text('Settings'), findsOneWidget);
+      await tester.tap(find.text('Settings'));
       await tester.pumpAndSettle(const Duration(seconds: 120));
 
       // Look for category management option
