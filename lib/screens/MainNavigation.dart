@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../screens/HomeScreen.dart';
-import '../screens/ChartsScreen.dart';
-import '../screens/AnalyticsScreen.dart';
+import '../screens/AnalyticsTabsScreen.dart';
 import '../screens/ExerciseList.dart';
 import '../screens/MealList.dart';
 import './settings.dart';
@@ -18,8 +17,7 @@ class _MainNavigationState extends State<MainNavigation> {
 
   final List<Widget> _screens = [
     HomeScreen(),
-    ChartsScreen(),
-    AnalyticsScreen(),
+    AnalyticsTabsScreen(),
     ExerciseListScreen(),
     MealListScreen(),
     SettingsScreen(),
@@ -53,21 +51,13 @@ class _MainNavigationState extends State<MainNavigation> {
           ),
           BottomNavigationBarItem(
             icon: Icon(
-              _selectedIndex == 1
-                  ? Icons.show_chart
-                  : Icons.show_chart_outlined,
-            ),
-            label: 'Trends',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(
-              _selectedIndex == 2 ? Icons.analytics : Icons.analytics_outlined,
+              _selectedIndex == 1 ? Icons.analytics : Icons.analytics_outlined,
             ),
             label: 'Analytics',
           ),
           BottomNavigationBarItem(
             icon: Icon(
-              _selectedIndex == 3
+              _selectedIndex == 2
                   ? Icons.fitness_center
                   : Icons.fitness_center_outlined,
             ),
@@ -75,7 +65,7 @@ class _MainNavigationState extends State<MainNavigation> {
           ),
           BottomNavigationBarItem(
             icon: Icon(
-              _selectedIndex == 4
+              _selectedIndex == 3
                   ? Icons.restaurant
                   : Icons.restaurant_outlined,
             ),
@@ -83,7 +73,7 @@ class _MainNavigationState extends State<MainNavigation> {
           ),
           BottomNavigationBarItem(
             icon: Icon(
-              _selectedIndex == 5 ? Icons.settings : Icons.settings_outlined,
+              _selectedIndex == 4 ? Icons.settings : Icons.settings_outlined,
             ),
             label: 'Settings',
           ),
