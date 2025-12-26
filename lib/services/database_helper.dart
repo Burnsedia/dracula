@@ -23,7 +23,7 @@ class DatabaseHelper {
 
     return await openDatabase(
       path,
-      version: 7,
+      version: 8,
       onCreate: _createDB,
       onUpgrade: _upgradeDB,
     );
@@ -139,6 +139,21 @@ CREATE TABLE meals (
         'ALTER TABLE exercise_logs ADD COLUMN categoryId INTEGER',
       );
     }
+    if (oldVersion < 8) {
+      // Add timing_type column to blood_sugar_logs
+      await db.execute(
+        'ALTER TABLE blood_sugar_logs ADD COLUMN timing_type TEXT DEFAULT \'beforeMeal\'',
+      );
+      // Migrate existing data
+      await db.execute('''
+        UPDATE blood_sugar_logs SET timing_type =
+        CASE
+          WHEN isBeforeMeal = 1 THEN 'beforeMeal'
+          WHEN isBeforeMeal = 0 THEN 'afterMeal'
+          ELSE 'none'
+        END
+      ''');
+    }
   }
 
   Future<BloodSugarLog> create(BloodSugarLog log) async {
@@ -156,7 +171,15 @@ CREATE TABLE meals (
     final db = await instance.database;
     final maps = await db.query(
       'blood_sugar_logs',
-      columns: ['id', 'bloodSugar', 'isBeforeMeal', 'createdAt'],
+      columns: [
+        'id',
+        'bloodSugar',
+        'isBeforeMeal',
+        'timing_type',
+        'categoryId',
+        'mealId',
+        'createdAt',
+      ],
       where: 'id = ?',
       whereArgs: [id],
     );
