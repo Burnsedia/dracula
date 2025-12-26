@@ -5,6 +5,7 @@ import '../models/bloodsugar.dart';
 import '../models/exercise.dart';
 import '../services/database_helper.dart';
 import '../services/settings_service.dart';
+import './settings.dart';
 
 class AnalyticsScreen extends StatefulWidget {
   @override
@@ -58,25 +59,31 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
       if (nearbyReadings.length >= 2) {
         nearbyReadings.sort((a, b) => a.createdAt.compareTo(b.createdAt));
         final beforeReading = nearbyReadings.firstWhere(
-            (bs) => bs.createdAt.isBefore(exerciseDate),
-            orElse: () => nearbyReadings.first);
+          (bs) => bs.createdAt.isBefore(exerciseDate),
+          orElse: () => nearbyReadings.first,
+        );
         final afterReading = nearbyReadings.firstWhere(
-            (bs) => bs.createdAt.isAfter(exerciseDate),
-            orElse: () => nearbyReadings.last);
+          (bs) => bs.createdAt.isAfter(exerciseDate),
+          orElse: () => nearbyReadings.last,
+        );
 
         final change = afterReading.bloodSugar - beforeReading.bloodSugar;
-        exerciseBloodSugarPairs
-            .add([exercise.durationMinutes.toDouble(), change]);
+        exerciseBloodSugarPairs.add([
+          exercise.durationMinutes.toDouble(),
+          change,
+        ]);
       }
     }
 
     if (exerciseBloodSugarPairs.isNotEmpty) {
       // Calculate simple correlation coefficient
       final n = exerciseBloodSugarPairs.length;
-      final sumX =
-          exerciseBloodSugarPairs.map((p) => p[0]).reduce((a, b) => a + b);
-      final sumY =
-          exerciseBloodSugarPairs.map((p) => p[1]).reduce((a, b) => a + b);
+      final sumX = exerciseBloodSugarPairs
+          .map((p) => p[0])
+          .reduce((a, b) => a + b);
+      final sumY = exerciseBloodSugarPairs
+          .map((p) => p[1])
+          .reduce((a, b) => a + b);
       final sumXY = exerciseBloodSugarPairs
           .map((p) => p[0] * p[1])
           .reduce((a, b) => a + b);
@@ -107,6 +114,16 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Health Analytics'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.more_vert),
+            onPressed: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const SettingsScreen()),
+            ),
+            tooltip: 'Settings',
+          ),
+        ],
       ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
@@ -123,14 +140,14 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                           'Avg Blood Sugar (30d)',
                           recentRecords.isNotEmpty
                               ? SettingsService()
-                                  .convertToDisplayUnit(
-                                    recentRecords
-                                            .map((r) => r.bloodSugar)
-                                            .reduce((a, b) => a + b) /
-                                        recentRecords.length,
-                                    _displayUnit,
-                                  )
-                                  .toStringAsFixed(1)
+                                    .convertToDisplayUnit(
+                                      recentRecords
+                                              .map((r) => r.bloodSugar)
+                                              .reduce((a, b) => a + b) /
+                                          recentRecords.length,
+                                      _displayUnit,
+                                    )
+                                    .toStringAsFixed(1)
                               : 'N/A',
                           'mg/dL',
                         ),
@@ -154,20 +171,23 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                       style: Theme.of(context).textTheme.titleLarge,
                     ),
                     const SizedBox(height: 16),
-                    ...correlations.entries.map((entry) => Card(
-                          margin: const EdgeInsets.only(bottom: 8),
-                          child: ListTile(
-                            title: Text(entry.key),
-                            trailing: Text(
-                              '${entry.value.toStringAsFixed(2)}',
-                              style: TextStyle(
-                                color:
-                                    entry.value > 0 ? Colors.green : Colors.red,
-                                fontWeight: FontWeight.bold,
-                              ),
+                    ...correlations.entries.map(
+                      (entry) => Card(
+                        margin: const EdgeInsets.only(bottom: 8),
+                        child: ListTile(
+                          title: Text(entry.key),
+                          trailing: Text(
+                            '${entry.value.toStringAsFixed(2)}',
+                            style: TextStyle(
+                              color: entry.value > 0
+                                  ? Colors.green
+                                  : Colors.red,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
-                        )),
+                        ),
+                      ),
+                    ),
                     const SizedBox(height: 24),
                   ],
 
@@ -255,13 +275,16 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                             double change = 0;
                             if (readings.length >= 2) {
                               readings.sort(
-                                  (a, b) => a.createdAt.compareTo(b.createdAt));
+                                (a, b) => a.createdAt.compareTo(b.createdAt),
+                              );
                               final before = readings.firstWhere(
-                                  (bs) => bs.createdAt.isBefore(exerciseTime),
-                                  orElse: () => readings.first);
+                                (bs) => bs.createdAt.isBefore(exerciseTime),
+                                orElse: () => readings.first,
+                              );
                               final after = readings.firstWhere(
-                                  (bs) => bs.createdAt.isAfter(exerciseTime),
-                                  orElse: () => readings.last);
+                                (bs) => bs.createdAt.isAfter(exerciseTime),
+                                orElse: () => readings.last,
+                              );
                               change = after.bloodSugar - before.bloodSugar;
                             }
 
@@ -298,7 +321,8 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                     ),
                   ] else ...[
                     const Text(
-                        'Add exercise and blood sugar data to see correlations'),
+                      'Add exercise and blood sugar data to see correlations',
+                    ),
                   ],
                 ],
               ),
@@ -320,14 +344,11 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
             const SizedBox(height: 8),
             Text(
               value,
-              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
+              style: Theme.of(
+                context,
+              ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
             ),
-            Text(
-              unit,
-              style: Theme.of(context).textTheme.bodySmall,
-            ),
+            Text(unit, style: Theme.of(context).textTheme.bodySmall),
           ],
         ),
       ),
