@@ -5,10 +5,6 @@ import "../services/database_helper.dart";
 import "../services/settings_service.dart";
 import "./AddBloodSugar.dart";
 import "./settings.dart";
-import "./ExerciseList.dart";
-import "./MealList.dart";
-import "./ChartsScreen.dart";
-import "./AnalyticsScreen.dart";
 
 class HomeScreen extends StatefulWidget {
   @override
