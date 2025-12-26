@@ -5,6 +5,7 @@ import "../models/meal.dart";
 import "../models/exercise.dart";
 import "../services/database_helper.dart";
 import "../services/settings_service.dart";
+import "package:flutter/material.dart";
 
 class AddRecordScreen extends StatefulWidget {
   final BloodSugarLog? record;
@@ -17,7 +18,7 @@ class AddRecordScreen extends StatefulWidget {
 
 class _AddRecordScreenState extends State<AddRecordScreen> {
   late TextEditingController bloodSugarController;
-  late bool isBeforeMeal;
+  late TimingType selectedTiming;
   int? selectedCategoryId;
   int? selectedMealId;
   List<Category> categories = [];
@@ -35,7 +36,7 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
                 .toString()
           : '',
     );
-    isBeforeMeal = widget.record?.isBeforeMeal ?? true;
+    selectedTiming = widget.record?.timingType ?? TimingType.beforeMeal;
     selectedCategoryId = widget.record?.categoryId;
     selectedMealId = widget.record?.mealId;
     // Note: workoutId not implemented in BloodSugarLog yet
@@ -84,23 +85,38 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
                     'Blood Sugar (${SettingsService().getUnitDisplayString(_displayUnit)})',
               ),
             ),
-            Column(
-              children: [
-                RadioListTile(
-                  title: const Text("Before Meal"),
-                  value: true,
-                  groupValue: isBeforeMeal,
-                  onChanged: (value) =>
-                      setState(() => isBeforeMeal = value ?? true),
-                ),
-                RadioListTile(
-                  title: const Text("After Meal"),
-                  value: false,
-                  groupValue: isBeforeMeal,
-                  onChanged: (value) =>
-                      setState(() => isBeforeMeal = value ?? false),
-                ),
-              ],
+            DropdownButtonFormField<TimingType>(
+              decoration: const InputDecoration(labelText: 'Timing'),
+              value: selectedTiming,
+              onChanged: (TimingType? newValue) {
+                if (newValue != null) {
+                  setState(() => selectedTiming = newValue);
+                }
+              },
+              items: TimingType.values.map((TimingType timing) {
+                String displayText;
+                switch (timing) {
+                  case TimingType.beforeMeal:
+                    displayText = 'Before Meal';
+                    break;
+                  case TimingType.afterMeal:
+                    displayText = 'After Meal';
+                    break;
+                  case TimingType.beforeExercise:
+                    displayText = 'Before Exercise';
+                    break;
+                  case TimingType.afterExercise:
+                    displayText = 'After Exercise';
+                    break;
+                  case TimingType.none:
+                    displayText = 'No Specific Timing';
+                    break;
+                }
+                return DropdownMenuItem<TimingType>(
+                  value: timing,
+                  child: Text(displayText),
+                );
+              }).toList(),
             ),
             if (categories.isNotEmpty)
               DropdownButtonFormField<int>(
@@ -123,7 +139,8 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
                 onChanged: (value) =>
                     setState(() => selectedCategoryId = value),
               ),
-            if (isBeforeMeal) ...[
+            if (selectedTiming == TimingType.beforeMeal ||
+                selectedTiming == TimingType.afterMeal) ...[
               const SizedBox(height: 16),
               DropdownButtonFormField<int>(
                 decoration: const InputDecoration(labelText: 'Meal (optional)'),
@@ -159,7 +176,7 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
                     if (widget.record != null) {
                       final updatedRecord = widget.record!.copyWith(
                         bloodSugar: storageValue,
-                        isBeforeMeal: isBeforeMeal,
+                        timingType: selectedTiming,
                         categoryId: selectedCategoryId,
                         mealId: selectedMealId,
                       );
@@ -172,7 +189,8 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
                     } else {
                       final newRecord = BloodSugarLog(
                         bloodSugar: storageValue,
-                        isBeforeMeal: isBeforeMeal,
+                        isBeforeMeal: selectedTiming == TimingType.beforeMeal,
+                        timingType: selectedTiming,
                         categoryId: selectedCategoryId,
                         mealId: selectedMealId,
                         createdAt: DateTime.now(),
