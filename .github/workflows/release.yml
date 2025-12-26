@@ -20,40 +20,33 @@ jobs:
       - name: Create keystore
         run: |
           echo "${{ secrets.ANDROID_KEYSTORE }}" | base64 -d > android/app/keystore.jks
-      - run: flutter build appbundle --release
+      - run: flutter build apk --release --split-per-abi
         env:
           ANDROID_KEYSTORE_PATH: android/app/keystore.jks
           ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
           ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
           ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
-      - run: flutter build apk --release --split-per-abi
-      - uses: actions/upload-artifact@v4
-        with:
-          name: android-release-aab
-          path: build/app/outputs/bundle/release/app-release.aab
       - uses: actions/upload-artifact@v4
         with:
           name: android-release-apk
           path: build/app/outputs/apk/release/app-*-release.apk
 
-  deploy-google-play:
-    needs: build-android
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-    timeout-minutes: 10
-    steps:
-      - uses: actions/checkout@v4
-      - uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: '3.0'
-      - run: gem install fastlane
-      - run: echo "${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT_JSON }}" > fastlane/google-play.json
-      - uses: actions/download-artifact@v4
-        with:
-          name: android-release-aab
-      - run: fastlane android deploy
-        working-directory: fastlane
+  # deploy-google-play disabled - focusing on APK releases
+  # deploy-google-play:
+  #   needs: build-android
+  #   runs-on: ubuntu-latest
+  #   permissions:
+  #     contents: read
+  #   timeout-minutes: 10
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - run: gem install fastlane
+  #     - run: echo "${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT_JSON }}" > fastlane/google-play.json
+  #     - uses: actions/download-artifact@v4
+  #       with:
+  #         name: android-release-aab
+  #     - run: fastlane android deploy
+  #       working-directory: fastlane
 
   build-f-droid:
     needs: build-android
@@ -65,7 +58,7 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           name: android-release-apk
-      # APK is ready for manual F-Droid submission
+      # APK is ready for manual F-Droid submission or GitHub release
 
   build-ios:
     runs-on: macos-latest
@@ -120,14 +113,10 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           name: android-release-apk
-      - uses: actions/download-artifact@v4
-        with:
-          name: android-release-aab
       - uses: softprops/action-gh-release@v1
         with:
           files: |
             app-*-release.apk
-            app-release.aab
           generate_release_notes: true
           prerelease: ${{ contains(github.ref, '-beta') }}
         env:
