@@ -17,9 +17,9 @@ class _MainNavigationState extends State<MainNavigation> {
 
   final List<Widget> _screens = [
     HomeScreen(),
-    AnalyticsTabsScreen(),
     ExerciseListScreen(),
     MealListScreen(),
+    AnalyticsTabsScreen(),
     SettingsScreen(),
   ];
 
@@ -51,13 +51,7 @@ class _MainNavigationState extends State<MainNavigation> {
           ),
           BottomNavigationBarItem(
             icon: Icon(
-              _selectedIndex == 1 ? Icons.analytics : Icons.analytics_outlined,
-            ),
-            label: 'Analytics',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(
-              _selectedIndex == 2
+              _selectedIndex == 1
                   ? Icons.fitness_center
                   : Icons.fitness_center_outlined,
             ),
@@ -65,11 +59,17 @@ class _MainNavigationState extends State<MainNavigation> {
           ),
           BottomNavigationBarItem(
             icon: Icon(
-              _selectedIndex == 3
+              _selectedIndex == 2
                   ? Icons.restaurant
                   : Icons.restaurant_outlined,
             ),
             label: 'Meals',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(
+              _selectedIndex == 3 ? Icons.analytics : Icons.analytics_outlined,
+            ),
+            label: 'Analytics',
           ),
           BottomNavigationBarItem(
             icon: Icon(
