@@ -28,10 +28,10 @@ void main() {
     ) async {
       await tester.pumpWidget(BloodSugarApp(onboardingCompleted: true));
       await tester.pump();
-      await tester.pump(const Duration(seconds: 10));
+      await tester.pump(const Duration(seconds: 2));
       await tester.pump();
-      await tester.pump(const Duration(seconds: 10));
-      await tester.pumpAndSettle(const Duration(seconds: 120));
+      await tester.pump(const Duration(seconds: 2));
+      await tester.pumpAndSettle(const Duration(seconds: 5));
 
       // Get the theme from the app
       final BuildContext context = tester.element(find.byType(HomeScreen));
@@ -64,10 +64,10 @@ void main() {
     ) async {
       await tester.pumpWidget(BloodSugarApp(onboardingCompleted: true));
       await tester.pump();
-      await tester.pump(const Duration(seconds: 10));
+      await tester.pump(const Duration(seconds: 2));
       await tester.pump();
-      await tester.pump(const Duration(seconds: 10));
-      await tester.pumpAndSettle(const Duration(seconds: 120));
+      await tester.pump(const Duration(seconds: 2));
+      await tester.pumpAndSettle(const Duration(seconds: 5));
 
       final BuildContext context = tester.element(find.byType(HomeScreen));
       final ThemeData theme = Theme.of(context);
@@ -90,10 +90,10 @@ void main() {
     ) async {
       await tester.pumpWidget(BloodSugarApp(onboardingCompleted: true));
       await tester.pump();
-      await tester.pump(const Duration(seconds: 10));
+      await tester.pump(const Duration(seconds: 2));
       await tester.pump();
-      await tester.pump(const Duration(seconds: 10));
-      await tester.pumpAndSettle(const Duration(seconds: 120));
+      await tester.pump(const Duration(seconds: 2));
+      await tester.pumpAndSettle(const Duration(seconds: 5));
 
       // Check that app bar has Dracula colors
       final appBar = tester.widget<AppBar>(find.byType(AppBar));

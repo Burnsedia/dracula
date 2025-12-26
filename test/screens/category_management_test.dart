@@ -27,13 +27,13 @@ void main() {
       WidgetTester tester,
     ) async {
       await tester.pumpWidget(MaterialApp(home: CategoryManagementScreen()));
-      await tester.pumpAndSettle(const Duration(seconds: 30));
+      await tester.pumpAndSettle(const Duration(seconds: 5));
 
       expect(find.text('Manage Categories'), findsOneWidget);
 
       // Tap add button
       await tester.tap(find.byIcon(Icons.add));
-      await tester.pumpAndSettle(const Duration(seconds: 30));
+      await tester.pumpAndSettle(const Duration(seconds: 5));
 
       expect(find.text('Add Category'), findsOneWidget);
 
@@ -47,28 +47,28 @@ void main() {
       WidgetTester tester,
     ) async {
       await tester.pumpWidget(MaterialApp(home: CategoryManagementScreen()));
-      await tester.pumpAndSettle(const Duration(seconds: 30));
+      await tester.pumpAndSettle(const Duration(seconds: 5));
 
       // Initially should show empty state
       expect(find.text('No custom categories yet.'), findsOneWidget);
 
       // Tap add button
       await tester.tap(find.byIcon(Icons.add));
-      await tester.pumpAndSettle(const Duration(seconds: 30));
+      await tester.pumpAndSettle(const Duration(seconds: 5));
 
       // Fill in category details
       await tester.enterText(find.byType(TextField).first, 'High Protein');
-      await tester.pumpAndSettle(const Duration(seconds: 30));
+      await tester.pumpAndSettle(const Duration(seconds: 5));
 
       // Select meal category type
       await tester.tap(find.text('General (Blood Sugar)'));
-      await tester.pumpAndSettle(const Duration(seconds: 30));
+      await tester.pumpAndSettle(const Duration(seconds: 5));
       await tester.tap(find.text('Meal Category'));
-      await tester.pumpAndSettle(const Duration(seconds: 30));
+      await tester.pumpAndSettle(const Duration(seconds: 5));
 
       // Save category
       await tester.tap(find.text('Save'));
-      await tester.pumpAndSettle(const Duration(seconds: 30));
+      await tester.pumpAndSettle(const Duration(seconds: 5));
 
       // Should show the new category
       expect(find.text('High Protein'), findsOneWidget);
@@ -79,25 +79,25 @@ void main() {
       WidgetTester tester,
     ) async {
       await tester.pumpWidget(MaterialApp(home: CategoryManagementScreen()));
-      await tester.pumpAndSettle(const Duration(seconds: 30));
+      await tester.pumpAndSettle(const Duration(seconds: 5));
 
       // Tap add button
       await tester.tap(find.byIcon(Icons.add));
-      await tester.pumpAndSettle(const Duration(seconds: 30));
+      await tester.pumpAndSettle(const Duration(seconds: 5));
 
       // Fill in category details
       await tester.enterText(find.byType(TextField).first, 'Strength Training');
-      await tester.pumpAndSettle(const Duration(seconds: 30));
+      await tester.pumpAndSettle(const Duration(seconds: 5));
 
       // Select workout category type
       await tester.tap(find.text('General (Blood Sugar)'));
-      await tester.pumpAndSettle(const Duration(seconds: 30));
+      await tester.pumpAndSettle(const Duration(seconds: 5));
       await tester.tap(find.text('Workout Category'));
-      await tester.pumpAndSettle(const Duration(seconds: 30));
+      await tester.pumpAndSettle(const Duration(seconds: 5));
 
       // Save category
       await tester.tap(find.text('Save'));
-      await tester.pumpAndSettle(const Duration(seconds: 30));
+      await tester.pumpAndSettle(const Duration(seconds: 5));
 
       // Should show the new category
       expect(find.text('Strength Training'), findsOneWidget);
@@ -117,7 +117,7 @@ void main() {
       await DatabaseHelper.instance.createCategory(workoutCat);
 
       await tester.pumpWidget(MaterialApp(home: CategoryManagementScreen()));
-      await tester.pumpAndSettle(const Duration(seconds: 30));
+      await tester.pumpAndSettle(const Duration(seconds: 5));
 
       // Should show all categories with their type labels
       expect(find.text('Fasting'), findsOneWidget);
