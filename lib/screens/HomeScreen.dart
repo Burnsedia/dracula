@@ -3,7 +3,6 @@ import "../models/bloodsugar.dart";
 import "../models/category.dart";
 import "../services/database_helper.dart";
 import "../services/settings_service.dart";
-import "../componets/sidebar.dart";
 import "./AddBloodSugar.dart";
 import "./settings.dart";
 import "./ExerciseList.dart";
@@ -73,8 +72,10 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               ListTile(
                 leading: const Icon(Icons.delete, color: Colors.red),
-                title:
-                    const Text('Delete', style: TextStyle(color: Colors.red)),
+                title: const Text(
+                  'Delete',
+                  style: TextStyle(color: Colors.red),
+                ),
                 onTap: () {
                   Navigator.pop(context); // Close the bottom sheet
                   _confirmDelete(record);
@@ -90,9 +91,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void _editRecord(BloodSugarLog record) async {
     final updatedRecord = await Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (context) => AddRecordScreen(record: record),
-      ),
+      MaterialPageRoute(builder: (context) => AddRecordScreen(record: record)),
     );
 
     if (updatedRecord != null) {
@@ -107,7 +106,8 @@ class _HomeScreenState extends State<HomeScreen> {
         return AlertDialog(
           title: const Text('Delete Record'),
           content: const Text(
-              'Are you sure you want to delete this blood sugar record?'),
+            'Are you sure you want to delete this blood sugar record?',
+          ),
           actions: <Widget>[
             TextButton(
               child: const Text('Cancel'),
@@ -146,19 +146,22 @@ class _HomeScreenState extends State<HomeScreen> {
     final today = DateTime.now();
     final todayRecords = bloodSugarRecords.where((record) {
       final recordDate = DateTime(
-          record.createdAt.year, record.createdAt.month, record.createdAt.day);
+        record.createdAt.year,
+        record.createdAt.month,
+        record.createdAt.day,
+      );
       final todayDate = DateTime(today.year, today.month, today.day);
       return recordDate == todayDate;
     }).toList();
 
     final average = todayRecords.isNotEmpty
         ? todayRecords.map((r) => r.bloodSugar).reduce((a, b) => a + b) /
-            todayRecords.length
+              todayRecords.length
         : 0.0;
     final latest = todayRecords.isNotEmpty
         ? todayRecords
-            .reduce((a, b) => a.createdAt.isAfter(b.createdAt) ? a : b)
-            .bloodSugar
+              .reduce((a, b) => a.createdAt.isAfter(b.createdAt) ? a : b)
+              .bloodSugar
         : null;
 
     return Container(
@@ -182,14 +185,14 @@ class _HomeScreenState extends State<HomeScreen> {
                     Text(
                       average > 0
                           ? SettingsService()
-                              .convertToDisplayUnit(average, _displayUnit)
-                              .toStringAsFixed(1)
+                                .convertToDisplayUnit(average, _displayUnit)
+                                .toStringAsFixed(1)
                           : '--',
-                      style:
-                          Theme.of(context).textTheme.headlineSmall?.copyWith(
-                                color: Theme.of(context).colorScheme.primary,
-                                fontWeight: FontWeight.bold,
-                              ),
+                      style: Theme.of(context).textTheme.headlineSmall
+                          ?.copyWith(
+                            color: Theme.of(context).colorScheme.primary,
+                            fontWeight: FontWeight.bold,
+                          ),
                     ),
                     Text(
                       SettingsService().getUnitDisplayString(_displayUnit),
@@ -218,14 +221,14 @@ class _HomeScreenState extends State<HomeScreen> {
                     Text(
                       latest != null
                           ? SettingsService()
-                              .convertToDisplayUnit(latest, _displayUnit)
-                              .toStringAsFixed(1)
+                                .convertToDisplayUnit(latest, _displayUnit)
+                                .toStringAsFixed(1)
                           : '--',
-                      style:
-                          Theme.of(context).textTheme.headlineSmall?.copyWith(
-                                color: Theme.of(context).colorScheme.primary,
-                                fontWeight: FontWeight.bold,
-                              ),
+                      style: Theme.of(context).textTheme.headlineSmall
+                          ?.copyWith(
+                            color: Theme.of(context).colorScheme.primary,
+                            fontWeight: FontWeight.bold,
+                          ),
                     ),
                     Text(
                       SettingsService().getUnitDisplayString(_displayUnit),
@@ -257,47 +260,7 @@ class _HomeScreenState extends State<HomeScreen> {
         title: const Text('Blood Sugar Tracker'),
         actions: [
           IconButton(
-            icon: const Icon(Icons.show_chart),
-            onPressed: () async {
-              await Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => ChartsScreen()),
-              );
-            },
-            tooltip: 'View Charts',
-          ),
-          IconButton(
-            icon: const Icon(Icons.analytics),
-            onPressed: () async {
-              await Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => AnalyticsScreen()),
-              );
-            },
-            tooltip: 'View Analytics',
-          ),
-          IconButton(
-            icon: const Icon(Icons.fitness_center),
-            onPressed: () async {
-              await Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => ExerciseListScreen()),
-              );
-            },
-            tooltip: 'Exercise Tracker',
-          ),
-          IconButton(
-            icon: const Icon(Icons.restaurant),
-            onPressed: () async {
-              await Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => MealListScreen()),
-              );
-            },
-            tooltip: 'Meal Tracker',
-          ),
-          IconButton(
-            icon: const Icon(Icons.settings),
+            icon: const Icon(Icons.more_vert),
             onPressed: () async {
               await Navigator.push(
                 context,
@@ -306,6 +269,7 @@ class _HomeScreenState extends State<HomeScreen> {
               // Reload settings and records when returning from settings
               await _loadSettingsAndRecords();
             },
+            tooltip: 'Settings',
           ),
         ],
       ),
@@ -329,13 +293,17 @@ class _HomeScreenState extends State<HomeScreen> {
                             final record = bloodSugarRecords[index];
                             final displayValue = SettingsService()
                                 .convertToDisplayUnit(
-                                    record.bloodSugar, _displayUnit);
+                                  record.bloodSugar,
+                                  _displayUnit,
+                                );
                             final unitString = SettingsService()
                                 .getUnitDisplayString(_displayUnit);
 
                             return Card(
                               margin: const EdgeInsets.symmetric(
-                                  horizontal: 16, vertical: 4),
+                                horizontal: 16,
+                                vertical: 4,
+                              ),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(12),
                               ),
