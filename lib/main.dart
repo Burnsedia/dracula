@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
-import "./screens/HomeScreen.dart";
 import "./screens/MainNavigation.dart";
 import "./screens/app_lock_screen.dart";
 import "./screens/onboarding.dart";
