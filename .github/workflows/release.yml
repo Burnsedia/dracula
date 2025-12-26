@@ -111,7 +111,7 @@ jobs:
         working-directory: fastlane
 
   github-release:
-    needs: [build-android, build-ios]
+    needs: [build-android]  # Only depend on Android for APK release
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -123,15 +123,11 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           name: android-release-aab
-      - uses: actions/download-artifact@v4
-        with:
-          name: ios-release-ipa
       - uses: softprops/action-gh-release@v1
         with:
           files: |
             app-*-release.apk
             app-release.aab
-            *.ipa
           generate_release_notes: true
           prerelease: ${{ contains(github.ref, '-beta') }}
         env:
