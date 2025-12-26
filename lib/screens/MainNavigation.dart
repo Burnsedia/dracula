@@ -15,24 +15,33 @@ class MainNavigation extends StatefulWidget {
 class _MainNavigationState extends State<MainNavigation> {
   int _selectedIndex = 0;
 
-  final List<Widget> _screens = [
-    HomeScreen(),
-    ExerciseListScreen(),
-    MealListScreen(),
-    AnalyticsTabsScreen(),
-    SettingsScreen(),
-  ];
-
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
     });
   }
 
+  Widget _getCurrentScreen() {
+    switch (_selectedIndex) {
+      case 0:
+        return HomeScreen();
+      case 1:
+        return ExerciseListScreen();
+      case 2:
+        return MealListScreen();
+      case 3:
+        return AnalyticsTabsScreen();
+      case 4:
+        return SettingsScreen();
+      default:
+        return HomeScreen();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: IndexedStack(index: _selectedIndex, children: _screens),
+      body: _getCurrentScreen(),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         currentIndex: _selectedIndex,
