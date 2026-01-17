@@ -153,6 +153,9 @@ Have you built any health-related apps? What challenges did you face? Drop a com
 
 ---
 
+
+I am now getting ready for deployment to the app store
+
 *Disclaimer: Dracula is a personal project and not medical advice. Consult healthcare professionals for diabetes management.*
 
 *#Flutter #MobileDevelopment #HealthTech #PrivacyFirst #OpenSource*
