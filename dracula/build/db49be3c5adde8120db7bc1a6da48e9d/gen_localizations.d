@@ -1,0 +1,1 @@
+ /Users/cypher/dev/dracula/dracula/lib/l10n/app_localizations_en.dart /Users/cypher/dev/dracula/dracula/lib/l10n/app_localizations.dart:  /Users/cypher/dev/dracula/dracula/l10n.yaml /Users/cypher/dev/dracula/dracula/lib/l10n/app_en.arb
