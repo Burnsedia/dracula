@@ -1,2 +1,3 @@
 TODO: Make BloodSugar Tracking Page
 TODO: Make Login Page
+TODO: fix ios simupator not working anymore
